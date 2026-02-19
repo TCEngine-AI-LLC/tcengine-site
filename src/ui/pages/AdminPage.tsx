@@ -13,8 +13,8 @@ function yesNo(v: boolean) {
   return v ? "yes" : "no";
 }
 
-export default function AdminPage() {
-  const email = requireAdminOrRedirect("/admin");
+export default async function AdminPage() {
+  const email = await requireAdminOrRedirect("/admin");
 
   const stripeOk = Boolean(process.env.STRIPE_SECRET_KEY);
   const webhookOk = Boolean(process.env.STRIPE_WEBHOOK_SECRET);

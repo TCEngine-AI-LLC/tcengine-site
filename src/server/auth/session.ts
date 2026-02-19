@@ -5,8 +5,10 @@ import { verifyAdminSessionToken } from "@/src/server/auth/tokens";
 
 export const ADMIN_SESSION_COOKIE = "tc_admin_session";
 
-export function getAdminSessionEmail(): string | null {
-  const v = cookies().get(ADMIN_SESSION_COOKIE)?.value;
+export async function getAdminSessionEmail(): Promise<string | null> {
+  const jar = await cookies();
+  const v = jar.get(ADMIN_SESSION_COOKIE)?.value;
+
   if (!v) return null;
   const res = verifyAdminSessionToken(v);
   if (!res.ok) return null;
