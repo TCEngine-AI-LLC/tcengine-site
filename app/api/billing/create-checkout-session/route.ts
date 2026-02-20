@@ -50,7 +50,17 @@ export async function POST(req: Request) {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       customer_email: email,
-      line_items: [{ price: priceId, quantity: 1 }],
+      line_items: [
+        {
+          price: priceId,
+          quantity: 1,
+          adjustable_quantity: {
+            enabled: true,
+            minimum: 1,
+            maximum: 10, // set to 4 if you want to cap at 4
+          },
+        },
+      ],
       success_url: `${origin}/pricing?success=1`,
       cancel_url: `${origin}/pricing`,
       metadata: { planId: planIdRaw },
