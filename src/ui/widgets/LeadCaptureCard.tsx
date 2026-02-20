@@ -21,6 +21,7 @@ export default function LeadCaptureCard({
   hint: string;
   source: string;
 }) {
+  type ApiResponse = { ok?: boolean; error?: string };
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
   const [email, setEmail] = React.useState("");
@@ -47,7 +48,7 @@ export default function LeadCaptureCard({
           headers: { "content-type": "application/json" },
           body: JSON.stringify({ token }),
         });
-        const vj = (await vr.json().catch(() => null)) as any;
+        const vj = (await vr.json().catch(() => null)) as ApiResponse | null;
         if (!vr.ok || !vj?.ok) {
           setStatus({
             kind: "error",
@@ -65,7 +66,7 @@ export default function LeadCaptureCard({
         body: JSON.stringify({ email, message, source }),
       });
 
-      const lj = (await lr.json().catch(() => null)) as any;
+      const lj = (await lr.json().catch(() => null)) as ApiResponse | null;
       if (!lr.ok || !lj?.ok) {
         setStatus({
           kind: "error",

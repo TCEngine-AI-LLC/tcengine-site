@@ -25,20 +25,23 @@ export async function sendEmail(args: SendEmailArgs): Promise<{ id?: string }> {
     process.env.RESEND_FROM ??
     "TC Engine <no-reply@tcengine.com>";
 
-  const resp = await resend.emails.send({
+  type ResendSendResponse = {
+    data?: { id?: string };
+    error?: { message?: string } | null;
+  };
+
+  const resp = (await resend.emails.send({
     from,
     to: args.to,
     subject: args.subject,
     text: args.text,
     html: args.html,
     replyTo: args.replyTo,
-  });
+  })) as ResendSendResponse;
 
-  // v6 returns { data, error }
-  if ((resp as any).error) {
-    const e = (resp as any).error;
-    throw new Error(`Resend error: ${e?.message ?? "unknown"}`);
+  if (resp.error) {
+    throw new Error(`Resend error: ${resp.error.message ?? "unknown"}`);
   }
 
-  return { id: (resp as any).data?.id };
+  return { id: resp.data?.id };
 }

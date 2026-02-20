@@ -30,6 +30,8 @@ export default function PricingCheckout({
   planId: ConsultingPlanId;
   label: string;
 }) {
+  type ApiResponse = { ok?: boolean; error?: string };
+  type CheckoutResponse = { ok?: boolean; error?: string; url?: string };
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
   const [open, setOpen] = React.useState(false);
@@ -61,7 +63,7 @@ export default function PricingCheckout({
           headers: { "content-type": "application/json" },
           body: JSON.stringify({ token }),
         });
-        const vj = (await vr.json().catch(() => null)) as any;
+        const vj = (await vr.json().catch(() => null)) as ApiResponse | null;
         if (!vr.ok || !vj?.ok) {
           setStatus({
             kind: "error",
@@ -76,9 +78,9 @@ export default function PricingCheckout({
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ email, planId }),
       });
-      const j = (await r.json().catch(() => null)) as any;
+      const j = (await r.json().catch(() => null)) as CheckoutResponse | null;
 
-      if (!r.ok || !j?.ok) {
+      if (!r.ok || !j?.ok || typeof j.url !== "string") {
         setStatus({
           kind: "error",
           message:
@@ -91,7 +93,7 @@ export default function PricingCheckout({
       }
 
       if (typeof window !== "undefined") {
-        window.location.href = j.url as string;
+        window.location.href = j.url;
       }
     } catch (e) {
       setStatus({

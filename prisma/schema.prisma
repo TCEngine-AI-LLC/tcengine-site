@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum LeadKind {
+  TECHNICAL_BRIEF
+  CHECKOUT_STARTED
+}
+
+enum ConsultingPlanId {
+  TEN_HOURS
+  FORTY_HOURS
+}
+
+enum PurchaseStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELED
+}
+
+model Customer {
+  id         String   @id @default(cuid())
+  email      String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  lastSeenAt DateTime?
+
+  leads     Lead[]
+  purchases Purchase[]
+}
+
+model Lead {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  kind      LeadKind
+  source    String
+  message   String?
+  ip        String?
+  userAgent String?
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@index([customerId, createdAt])
+  @@index([kind, createdAt])
+}
+
+model Purchase {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  status  PurchaseStatus @default(PENDING)
+  paidAt   DateTime?
+
+  planId   ConsultingPlanId
+  amountTotal Int?
+  currency  String?
+
+  stripeCheckoutSessionId String @unique
+  stripeCustomerId        String?
+  stripePaymentIntentId   String?
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@index([status, createdAt])
+  @@index([customerId, createdAt])
+}
+
+model StripeWebhookEvent {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+
+  eventId     String   @unique
+  type        String
+  livemode    Boolean
+  payload     Json
+
+  processedAt DateTime?
+  error       String?
+
+  @@index([type, createdAt])
+}

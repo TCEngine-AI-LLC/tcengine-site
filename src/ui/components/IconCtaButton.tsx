@@ -26,7 +26,7 @@ export default function IconCtaButton({
       onClick={onClick}
       disabled={disabled}
       aria-label={ariaLabel ?? tooltip}
-      component={href ? (Link as any) : "button"}
+      component={href ? (Link as React.ElementType) : "button"}
       // MUI + Next Link
       {...(href ? { href } : {})}
       size="large"

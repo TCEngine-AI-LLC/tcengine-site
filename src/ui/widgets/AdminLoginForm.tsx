@@ -22,7 +22,7 @@ export default function AdminLoginForm({ nextPath }: { nextPath: string }) {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ email, next: nextPath }),
       });
-      const j = (await r.json().catch(() => null)) as any;
+      const j = (await r.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
       if (!r.ok || !j?.ok) {
         setStatus({ kind: "error", message: j?.error ?? "Request failed." });
         return;

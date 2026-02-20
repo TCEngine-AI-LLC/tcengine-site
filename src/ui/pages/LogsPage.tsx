@@ -30,7 +30,7 @@ export default function LogsPage() {
             <div style={{ fontWeight: 900, letterSpacing: "-0.02em" }}>No embeds configured.</div>
             <p style={{ marginTop: 8 }}>{logsCopy.note}</p>
             <p style={{ marginTop: 10 }} className="mono small">
-              LINKEDIN_EMBED_URLS="https://www.linkedin.com/embed/feed/update/urn:li:share:..."
+              LINKEDIN_EMBED_URLS=&quot;https://www.linkedin.com/embed/feed/update/urn:li:share:...&quot;
             </p>
           </div>
         ) : (

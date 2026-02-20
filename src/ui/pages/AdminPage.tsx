@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { requireAdminOrRedirect } from "@/src/server/auth/requireAdmin";
 import Section from "@/src/ui/components/Section";
+import prisma from "@/src/server/db/prisma";
 
 export const metadata: Metadata = {
   title: "Admin",
@@ -15,7 +16,15 @@ function yesNo(v: boolean) {
 
 export default async function AdminPage() {
   const email = await requireAdminOrRedirect("/admin");
-
+  const customers = await prisma.customer.findMany({
+    orderBy: [{ lastSeenAt: "desc" }, { createdAt: "desc" }],
+    take: 200,
+    include: {
+      purchases: { orderBy: { createdAt: "desc" }, take: 5 },
+      leads: { orderBy: { createdAt: "desc" }, take: 5 },
+    },
+  });
+  
   const stripeOk = Boolean(process.env.STRIPE_SECRET_KEY);
   const webhookOk = Boolean(process.env.STRIPE_WEBHOOK_SECRET);
   const resendOk = Boolean(process.env.RESEND_API_KEY);
@@ -35,6 +44,39 @@ export default async function AdminPage() {
         </p>
       </div>
 
+      <Section title="Customers">
+        <div className="card">
+          {customers.length === 0 ? (
+            <p className="small">No customer activity yet.</p>
+          ) : (
+            <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.9 }}>
+              {customers.map((c) => {
+                const lastPurchase = c.purchases[0];
+                return (
+                  <li key={c.id}>
+                    <span className="mono">{c.email}</span>
+                    {lastPurchase ? (
+                      <>
+                        {"  "}
+                        <span style={{ color: "rgba(11, 15, 23, 0.7)" }}>
+                          purchased {lastPurchase.planId} ({lastPurchase.status})
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        {"  "}
+                        <span style={{ color: "rgba(11, 15, 23, 0.55)" }}>
+                          no purchases yet
+                        </span>
+                      </>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+      </Section>
       <Section title="Env status">
         <div className="card">
           <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.9, color: "rgba(11, 15, 23, 0.78)" }}>

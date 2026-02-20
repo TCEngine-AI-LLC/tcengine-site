@@ -28,7 +28,7 @@ export default function VerifyHumanClient({ nextPath }: { nextPath: string }) {
           headers: { "content-type": "application/json" },
           body: JSON.stringify({ token }),
         });
-        const j = (await r.json().catch(() => null)) as any;
+        const j = (await r.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
         if (!r.ok || !j?.ok) {
           setStatus({
             kind: "error",
