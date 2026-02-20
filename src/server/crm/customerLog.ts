@@ -27,7 +27,7 @@ export async function logLead(args: {
   userAgent?: string;
 }) {
   const customer = await upsertCustomerByEmail(args.email);
-
+  console.log("logLead", { email: args.email, kind: args.kind, source: args.source });
   await prisma.lead.create({
     data: {
       customerId: customer.id,
@@ -38,7 +38,7 @@ export async function logLead(args: {
       userAgent: args.userAgent ? clampStr(args.userAgent, 300) : null,
     },
   });
-
+  console.log("leadCreated");
   return customer;
 }
 
