@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
+import BrandLogo from "@/src/ui/components/BrandLogo";
 
 import "./globals.css";
 
@@ -91,9 +92,7 @@ export default function RootLayout({
                 flexWrap: "wrap",
               }}
             >
-              <Link href="/" className="brandMark" aria-label="TC Engine home">
-                <span>{siteMeta.brand}</span>
-              </Link>
+              <BrandLogo />
 
               <nav className="topNav" aria-label="Primary">
                 {NAV_ITEMS.map((it) => (

@@ -26,6 +26,12 @@ export const siteMeta = {
   ceoLinkedIn:
     process.env.NEXT_PUBLIC_CEO_LINKEDIN ??
     "https://www.linkedin.com/company/trade-collaboration-engine/",
+  
+  logo: {
+    src: "/tcengine.png",
+    alt: "TC Engine",
+    height: 26, // tweak if you want (24–32 usually looks right)
+  },
 } as const;
 
 export const NAV_ITEMS: NavItem[] = [
