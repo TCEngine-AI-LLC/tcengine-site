@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { requireAdminOrRedirect } from "@/src/server/auth/requireAdmin";
 import Section from "@/src/ui/components/Section";
 import prisma from "@/src/server/db/prisma";
+import AdminStripeOneDollarTest from "../widgets/AdminStripeOneDollarTest";
 
 export const metadata: Metadata = {
   title: "Admin",
@@ -105,6 +106,11 @@ export default async function AdminPage() {
             This admin view is intentionally minimal. Customer events are primarily monitored via email
             notifications (leads + Stripe webhooks).
           </p>
+        </div>
+      </Section>
+      <Section title="Stripe test" subtle>
+        <div className="card">
+          <AdminStripeOneDollarTest />
         </div>
       </Section>
     </main>
