@@ -1,4 +1,8 @@
-export type ConsultingPlanId = "TEN_HOURS" | "FORTY_HOURS" | "ONE_DOLLAR_TEST";
+// Existing...
+export type ConsultingPlanId = "TEN_HOURS" | "FORTY_HOURS";
+
+// Add this near the bottom:
+export const ADMIN_TEST_PRICE_ENV = "STRIPE_PRICE_ID_TEST_1DOLLAR" as const;
 
 export type ConsultingPlan = {
   id: ConsultingPlanId;
@@ -13,11 +17,5 @@ export const CONSULTING_PLANS: Record<ConsultingPlanId, ConsultingPlan> = {
   FORTY_HOURS: {
     id: "FORTY_HOURS",
     stripePriceEnv: "STRIPE_PRICE_ID_CONSULTING_40H",
-  },
-  ONE_DOLLAR_TEST: {
-    id: "ONE_DOLLAR_TEST",
-    // Not used by the public checkout route (we keep public route restricted),
-    // but keeping this here avoids “magic strings” scattered around the codebase.
-    stripePriceEnv: "STRIPE_PRICE_ID_ONE_DOLLAR_TEST",
-  },
+  }
 };

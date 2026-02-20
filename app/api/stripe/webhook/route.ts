@@ -95,9 +95,7 @@ export async function POST(req: Request) {
         try {
           await sendEmail({
             to: adminTo,
-            subject: planIdRaw === "ONE_DOLLAR_TEST"
-              ? `[TC Engine][test] Paid: ${planIdRaw}`
-              : `[TC Engine] Paid: ${planIdRaw}`,
+            subject: `[TC Engine] Paid: ${planIdRaw}`,
             text: [
               `Plan: ${planIdRaw}`,
               `Customer email: ${email}`,
