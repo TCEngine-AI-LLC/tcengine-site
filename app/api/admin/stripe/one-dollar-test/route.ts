@@ -9,8 +9,17 @@ import { getStripe } from "@/src/server/stripe/stripe";
 
 export const runtime = "nodejs";
 
-// GET so you can click it from /admin (no client JS needed)
+// app/api/admin/stripe/one-dollar-test/route.ts
+
 export async function GET(req: Request) {
+  return handleOneDollarTest(req);
+}
+
+export async function POST(req: Request) {
+  return handleOneDollarTest(req);
+}
+
+async function handleOneDollarTest(req: Request) {
   const origin = new URL(req.url).origin;
 
   // Admin gate
@@ -21,7 +30,7 @@ export async function GET(req: Request) {
 
   try {
     const stripe = getStripe();
-    const priceId = mustEnv(ADMIN_TEST_PRICE_ENV); // <-- THIS is what you asked for
+    const priceId = mustEnv(ADMIN_TEST_PRICE_ENV);
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
@@ -33,7 +42,7 @@ export async function GET(req: Request) {
         purpose: "admin_one_dollar_test",
         requestedBy: email,
       },
-    } satisfies Stripe.Checkout.SessionCreateParams);
+    });
 
     if (!session.url) {
       return NextResponse.json(
