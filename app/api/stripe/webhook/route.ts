@@ -14,7 +14,7 @@ import {
 export const runtime = "nodejs";
 
 function isPlanId(v: unknown): v is ConsultingPlanId {
-  return v === "TEN_HOURS" || v === "FORTY_HOURS";
+  return v === "TEN_HOURS" || v === "FORTY_HOURS" || v === "ONE_DOLLAR_TEST";
 }
 
 export async function POST(req: Request) {
@@ -95,7 +95,9 @@ export async function POST(req: Request) {
         try {
           await sendEmail({
             to: adminTo,
-            subject: `[TC Engine] Paid: ${planIdRaw}`,
+            subject: planIdRaw === "ONE_DOLLAR_TEST"
+              ? `[TC Engine][test] Paid: ${planIdRaw}`
+              : `[TC Engine] Paid: ${planIdRaw}`,
             text: [
               `Plan: ${planIdRaw}`,
               `Customer email: ${email}`,

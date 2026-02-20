@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { aboutCopy } from "@/src/customizations/copy";
 import { siteMeta } from "@/src/customizations/site";
 import Section from "@/src/ui/components/Section";
+import AdminStripeOneDollarTest from "../widgets/AdminStripeOneDollarTest";
 
 export const metadata: Metadata = {
   title: "About",
@@ -41,6 +42,11 @@ export default function AboutPage() {
 
           <div className="hr" style={{ margin: "14px 0" }} />
           <p>{aboutCopy.closing}</p>
+        </div>
+      </Section>
+      <Section title="Stripe test" subtle>
+        <div className="card">
+          <AdminStripeOneDollarTest />
         </div>
       </Section>
     </main>

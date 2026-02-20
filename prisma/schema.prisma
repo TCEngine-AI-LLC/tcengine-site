@@ -15,6 +15,7 @@ enum LeadKind {
 enum ConsultingPlanId {
   TEN_HOURS
   FORTY_HOURS
+  ONE_DOLLAR_TEST
 }
 
 enum PurchaseStatus {
