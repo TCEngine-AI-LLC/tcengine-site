@@ -14,7 +14,7 @@ import {
 export const runtime = "nodejs";
 
 function isPlanId(v: unknown): v is ConsultingPlanId {
-  return v === "TEN_HOURS" || v === "FORTY_HOURS" || v === "ONE_DOLLAR_TEST";
+  return v === "TEN_HOURS" || v === "FORTY_HOURS";
 }
 
 export async function POST(req: Request) {

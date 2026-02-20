@@ -1,4 +1,3 @@
-import Stripe from "stripe";
 import { NextResponse } from "next/server";
 
 import { ADMIN_TEST_PRICE_ENV } from "@/src/customizations/pricing";
@@ -9,23 +8,23 @@ import { getStripe } from "@/src/server/stripe/stripe";
 
 export const runtime = "nodejs";
 
-// app/api/admin/stripe/one-dollar-test/route.ts
-
-export async function GET(req: Request) {
-  return handleOneDollarTest(req);
+export async function OPTIONS() {
+  // Avoid noisy 405s from preflight/tooling.
+  return new NextResponse(null, {
+    status: 204,
+    headers: { Allow: "POST, OPTIONS" },
+  });
 }
 
 export async function POST(req: Request) {
-  return handleOneDollarTest(req);
-}
-
-async function handleOneDollarTest(req: Request) {
   const origin = new URL(req.url).origin;
 
-  // Admin gate
   const email = await getAdminSessionEmail();
-  if (!email || !isAdminEmail(email)) {
-    return NextResponse.redirect(`${origin}/login?next=${encodeURIComponent("/admin")}`);
+  if (!email) {
+    return NextResponse.json({ ok: false, error: "not_signed_in" }, { status: 401 });
+  }
+  if (!isAdminEmail(email)) {
+    return NextResponse.json({ ok: false, error: "not_allowed" }, { status: 403 });
   }
 
   try {
@@ -51,7 +50,7 @@ async function handleOneDollarTest(req: Request) {
       );
     }
 
-    return NextResponse.redirect(session.url);
+    return NextResponse.json({ ok: true, url: session.url });
   } catch (e) {
     console.error("[api/admin/stripe/one-dollar-test] error", e);
     return NextResponse.json(
