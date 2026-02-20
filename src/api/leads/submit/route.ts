@@ -4,6 +4,7 @@ import { requireTurnstileOr403 } from "@/src/server/security/turnstileGate";
 import { logLead } from "@/src/server/crm/customerLog";
 
 export async function POST(req: Request) {
+  console.log("Inside POST")
   const guard = await requireTurnstileOr403(req);
   if (guard) return guard;
 
@@ -17,7 +18,7 @@ export async function POST(req: Request) {
   const email = typeof body?.email === "string" ? body.email : "";
   const message = typeof body?.message === "string" ? body.message : "";
   const source = typeof body?.source === "string" ? body.source : "unknown";
-
+  console.log(`Inside POST ${email} ${message} ${source}`)
   const ip = req.headers.get("x-forwarded-for") ?? undefined;
   const userAgent = req.headers.get("user-agent") ?? undefined;
 
@@ -30,7 +31,7 @@ export async function POST(req: Request) {
       ip,
       userAgent,
     });
-
+    console.log(`After logLead ${email} ${message} ${source}`)
     // If you already email yourself via Resend here, keep it.
     return Response.json({ ok: true });
   } catch (e) {
