@@ -9,6 +9,7 @@ export default function BrandLogo() {
       title="Home"
       style={{ display: "inline-flex", alignItems: "center" }}
     >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={siteMeta.logo.src}
         alt={siteMeta.logo.alt}

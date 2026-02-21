@@ -41,6 +41,7 @@ export default async function AdminPage() {
           Signed in as <span className="mono">{email}</span>
         </p>
         <p style={{ marginTop: 10 }} className="small">
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a className="mono" href="/api/auth/admin/logout">Logout</a>
         </p>
       </div>

@@ -79,6 +79,7 @@ export default async function PricingPage({
         <div className="card">
           <p>{pricingCopy.finePrint}</p>
           <p style={{ marginTop: 12 }}>
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             If checkout is blocked, go to <a className="mono" href="/verify-human?next=%2Fpricing">/verify-human</a>.
           </p>
         </div>

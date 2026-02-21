@@ -1,0 +1,10 @@
+{
+  "theme": "dark",
+  "themeVariables": {
+    "fontFamily": "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial",
+    "fontSize": "14px"
+  },
+  "flowchart": { "useMaxWidth": false },
+  "sequence": { "useMaxWidth": false },
+  "gantt": { "useMaxWidth": false }
+}

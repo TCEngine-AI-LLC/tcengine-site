@@ -1,52 +1,32 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
-import BrandLogo from "@/src/ui/components/BrandLogo";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter"; // Next 16
 
 import "./globals.css";
 
 import AppProviders from "@/src/ui/providers/AppProviders";
-import { NAV_ITEMS, siteMeta } from "@/src/customizations/site";
+import SiteChrome from "@/src/ui/components/SiteChrome";
+import { siteMeta } from "@/src/customizations/site";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteMeta.url),
-  title: {
-    default: siteMeta.title,
-    template: `%s | ${siteMeta.brand}`,
-  },
+  title: { default: siteMeta.title, template: `%s | ${siteMeta.brand}` },
   description: siteMeta.description,
-  alternates: {
-    canonical: "/",
-  },
+  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     url: siteMeta.url,
     title: siteMeta.title,
     description: siteMeta.description,
   },
-  twitter: {
-    card: "summary",
-    title: siteMeta.title,
-    description: siteMeta.description,
-  },
+  twitter: { card: "summary", title: siteMeta.title, description: siteMeta.description },
   robots: { index: true, follow: true },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -57,13 +37,7 @@ export default function RootLayout({
         url: siteMeta.url,
         description: siteMeta.description,
         sameAs: [siteMeta.ceoLinkedIn],
-        contactPoint: [
-          {
-            "@type": "ContactPoint",
-            contactType: "sales",
-            email: siteMeta.salesEmail,
-          },
-        ],
+        contactPoint: [{ "@type": "ContactPoint", contactType: "sales", email: siteMeta.salesEmail }],
       },
       {
         "@type": "WebSite",
@@ -79,48 +53,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <AppProviders>
-          <div className="container">
-            <header
-              style={{
-                position: "relative",
-                padding: "18px 0",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: 14,
-                flexWrap: "wrap",
-              }}
-            >
-              <BrandLogo />
+        <AppRouterCacheProvider options={{ enableCssLayer: true }}>
+          <AppProviders>
+            <SiteChrome>{children}</SiteChrome>
 
-              <nav className="topNav" aria-label="Primary">
-                {NAV_ITEMS.map((it) => (
-                  <Link key={it.href} href={it.href}>
-                    {it.label}
-                  </Link>
-                ))}
-              </nav>
-            </header>
-
-            {children}
-
-            <footer className="hr" style={{ marginTop: 40, paddingTop: 18 }}>
-              <div style={{ color: "rgba(11, 15, 23, 0.65)", fontSize: 13, lineHeight: 1.6 }}>
-                © {new Date().getFullYear()} {siteMeta.brand} • {siteMeta.addressLine}
-                <div style={{ marginTop: 6 }}>
-                  <span className="mono">{siteMeta.salesEmail}</span>
-                </div>
-              </div>
-            </footer>
-          </div>
-
-          <script
-            type="application/ld+json"
-             
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-          />
-        </AppProviders>
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+          </AppProviders>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

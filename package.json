@@ -4,27 +4,38 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run lint && next build",
     "start": "next start",
     "lint": "eslint",
     "lint:fix": "eslint . --fix",
     "postinstall": "prisma generate",
-    "vercel-build": "node scripts/vercel-build.mjs"
+    "vercel-build": "node scripts/vercel-build.mjs",
+    "render:mermaid": "node scripts/render-mermaid.mjs"
   },
   "dependencies": {
+    "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@mermaid-js/mermaid-cli": "^11.12.0",
     "@mui/icons-material": "^7.3.8",
     "@mui/material": "^7.3.8",
     "@mui/material-nextjs": "^7.3.8",
     "@prisma/adapter-pg": "^7.4.1",
     "@prisma/client": "^7.4.1",
+    "gray-matter": "^4.0.3",
+    "marked": "^17.0.3",
     "next": "16.1.6",
     "pg": "^8.18.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "rehype-stringify": "^10.0.1",
+    "remark": "^15.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
     "resend": "^6.9.2",
-    "stripe": "^20.3.1"
+    "stripe": "^20.3.1",
+    "unist-util-visit": "^5.1.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

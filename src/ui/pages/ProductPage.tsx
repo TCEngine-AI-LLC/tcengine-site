@@ -43,6 +43,7 @@ export default function ProductPage() {
             For product questions, email <span className="mono">{siteMeta.salesEmail}</span>.
           </p>
           <p style={{ marginTop: 10 }}>
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             If you want consulting to unblock a decision quickly, see <a href="/pricing" className="mono">/pricing</a>.
           </p>
         </div>

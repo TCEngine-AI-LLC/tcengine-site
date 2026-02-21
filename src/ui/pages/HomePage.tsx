@@ -7,6 +7,7 @@ import { siteMeta } from "@/src/customizations/site";
 import Section from "@/src/ui/components/Section";
 import IconCtaButton from "@/src/ui/components/IconCtaButton";
 import LeadCaptureCard from "@/src/ui/widgets/LeadCaptureCard";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: siteMeta.title,
@@ -98,7 +99,7 @@ export default function HomePage() {
             </p>
           </div>
           <div style={{ alignSelf: "center" }}>
-            <a
+            <Link
               href="/product"
               className="mono"
               style={{
@@ -109,8 +110,8 @@ export default function HomePage() {
                 boxShadow: "0 10px 24px rgba(15, 23, 42, 0.06)",
               }}
             >
-              /product →
-            </a>
+              /product
+            </Link>
           </div>
         </div>
       </Section>

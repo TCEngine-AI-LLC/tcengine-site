@@ -36,8 +36,11 @@ export const siteMeta = {
 
 export const NAV_ITEMS: NavItem[] = [
   { label: "Home", href: "/" },
-  { label: "What our product does", href: "/product" },
-  { label: "Consulting pricing", href: "/pricing" },
-  { label: "Daily logs", href: "/logs" },
+  { label: "AIEM", href: "/aiem" },
+  { label: "Platform", href: "/platform" },
+  { label: "Architecture", href: "/architecture" },
+  { label: "Engagement", href: "/pricing" },
+  { label: "Thought Leadership", href: "/logs" },
+  { label: "Details", href: "/details" },
   { label: "About", href: "/about" },
 ];
