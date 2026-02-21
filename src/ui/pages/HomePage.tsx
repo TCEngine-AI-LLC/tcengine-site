@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
+import { Box } from "@mui/material";
 
-import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
+import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
+import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
 
-import { homeCopy } from "@/src/customizations/copy";
 import { siteMeta } from "@/src/customizations/site";
-import Section from "@/src/ui/components/Section";
 import IconCtaButton from "@/src/ui/components/IconCtaButton";
 import LeadCaptureCard from "@/src/ui/widgets/LeadCaptureCard";
-import Link from "next/link";
 
 export const metadata: Metadata = {
   title: siteMeta.title,
@@ -15,106 +14,125 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
-  const scheduleUrl =
-    process.env.NEXT_PUBLIC_SCHEDULE_URL ??
-    `mailto:${siteMeta.salesEmail}?subject=${encodeURIComponent("AIEM Deep Dive")}`;
-
   return (
     <main>
-      <div className="heroGrid">
-        <div className="heroPanel">
-          <div className="badge">{homeCopy.badge}</div>
-          <h1>
-            {homeCopy.heroTitle}
-            <span style={{ display: "block", marginTop: 10, fontSize: 18, color: "rgba(11, 15, 23, 0.7)", fontWeight: 700 }}>
-              {homeCopy.heroSubtitle}
-            </span>
-          </h1>
-          <p style={{ fontSize: 16 }}>{homeCopy.heroLead}</p>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", md: "minmax(0, 7fr) minmax(0, 3fr)" },
+          gap: { xs: 2, md: 3 },
+          alignItems: "start",
+        }}
+      >
+        {/* LEFT (≈70%) */}
+        <Box>
+          <div className="heroPanel">
+            <h2 style={{ margin: "0 0 6px" }}>Overview</h2>
 
-          <div style={{ marginTop: 18, display: "flex", flexWrap: "wrap", gap: 14 }}>
-            <IconCtaButton
-              icon={<CalendarMonthRoundedIcon />}
-              tooltip={homeCopy.ctas.secondary.hint}
-              label={homeCopy.ctas.secondary.label}
-              href={scheduleUrl}
-              ariaLabel="Schedule AIEM deep dive"
-            />
-          </div>
+            <h3 style={{ margin: "0 0 10px" }}>Protecting National Military-Industrial Intellectual Property in the AI Era</h3>
 
-          <div className="hr" />
+            <p style={{ fontSize: 16, marginTop: 12 }}>
+              We deliver AI Export Modernization (AIEM) — the architecture, data science, and infrastructure required to
+              govern software, technical data, and digital engineering environments across the global defense industrial
+              base.
+            </p>
 
-          <div className="kpi">
-            Minimal UI. Deterministic logic. Audit-ready evidence.
-          </div>
-        </div>
+            <p style={{ fontSize: 16, marginTop: 12 }}>
+              Export controls move from paperwork to <strong>deterministic enforcement infrastructure</strong>.
+            </p>
 
-        <LeadCaptureCard
-          title={homeCopy.ctas.primary.label}
-          hint={homeCopy.ctas.primary.hint}
-          source="home_tech_brief"
-        />
-      </div>
+            <p style={{ fontSize: 16, marginTop: 12 }}>
+              Modern military advantage lives in code, models, and collaboration networks. AIEM secures the intangible
+              battlespace.
+            </p>
 
-      <Section title={homeCopy.problemShift.title}>
-        <p>{homeCopy.problemShift.intro}</p>
-        <div style={{ marginTop: 10 }}>
-          <ul style={{ margin: 0, paddingLeft: 18, color: "rgba(11, 15, 23, 0.78)", lineHeight: 1.75 }}>
-            {homeCopy.problemShift.bullets.map((b) => (
-              <li key={b}>{b}</li>
-            ))}
-          </ul>
-        </div>
-      </Section>
-
-      <Section title={homeCopy.solution.title}>
-        <div className="grid2">
-          {homeCopy.solution.body.map((p) => (
-            <div key={p} className="card">
-              <p style={{ color: "rgba(11, 15, 23, 0.75)" }}>{p}</p>
+            <div style={{ marginTop: 18, display: "flex", flexWrap: "wrap", gap: 14 }}>
+              <IconCtaButton
+                icon={<DescriptionRoundedIcon />}
+                tooltip="Jump to the request brief form on the right."
+                label="Request Executive Brief"
+                href="/#request-brief"
+                ariaLabel="Request Executive Brief"
+              />
+              <IconCtaButton
+                icon={<AccountTreeRoundedIcon />}
+                tooltip="Open the AIEM Architecture page (markdown route)."
+                label="Explore the AIEM Architecture"
+                href="/architecture"
+                ariaLabel="Explore the AIEM Architecture"
+              />
             </div>
-          ))}
-        </div>
-      </Section>
 
-      <Section title={homeCopy.whatWeBuild.title}>
-        <div className="grid2">
-          {homeCopy.whatWeBuild.cards.map((c) => (
-            <div key={c.title} className="card">
-              <div style={{ fontWeight: 900, letterSpacing: "-0.02em" }}>{c.title}</div>
-              <p style={{ marginTop: 8 }}>{c.body}</p>
-            </div>
-          ))}
-        </div>
-      </Section>
+            <div className="hr" />
 
-      <Section title="Next" subtle>
-        <div className="card" style={{ display: "flex", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
-          <div>
-            <div style={{ fontWeight: 900, letterSpacing: "-0.02em" }}>
-              Want the product view?
-            </div>
-            <p style={{ marginTop: 6 }}>
-              See how ExRegs, ExClass, and ExAuth fit together.
+            <h2 style={{ margin: "0 0 6px" }}>THE PROBLEM</h2>
+            <h3 style={{ margin: "0 0 10px" }}>Export Controls Were Built for Hardware. The Threat Has Moved to Data.</h3>
+
+            <p style={{ marginTop: 10 }}>
+              Today’s most sensitive technologies exist as:
+            </p>
+
+            <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.85 }}>
+              <li>Software repositories</li>
+              <li>Digital engineering models</li>
+              <li>AI systems</li>
+              <li>Manufacturing files</li>
+              <li>Cloud collaboration environments</li>
+            </ul>
+
+            <p style={{ marginTop: 12 }}>
+              Legacy compliance cannot control intangible exports at scale.
+            </p>
+
+            <div className="hr" />
+
+            <h2 style={{ margin: "0 0 6px" }}>THE SHIFT</h2>
+            <h3 style={{ margin: "0 0 10px" }}>AI Export Modernization (AIEM)</h3>
+
+            <p style={{ marginTop: 10 }}>
+              AIEM transforms export regulation into <strong>National Industrial IP Defense Infrastructure</strong>.
+            </p>
+            <p style={{ marginTop: 10 }}>Not compliance software. Not workflow automation.</p>
+            <p style={{ marginTop: 10 }}>A control plane for controlled technology.</p>
+
+            <div className="hr" />
+
+            <h2 style={{ margin: "0 0 10px" }}>WHO WE SERVE</h2>
+
+            <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.85 }}>
+              <li>Defense Industrial <strong>Base</strong></li>
+              <li>Space Systems</li>
+              <li>Autonomous Platforms</li>
+              <li>Advanced Manufacturing</li>
+              <li>Allied Industrial Cooperation</li>
+            </ul>
+
+            <div className="hr" />
+
+            <h2 style={{ margin: "0 0 10px" }}>THE REAL SECRET</h2>
+            <p style={{ marginTop: 10 }}>
+              We deliver <strong>export control infrastructure</strong>.
             </p>
           </div>
-          <div style={{ alignSelf: "center" }}>
-            <Link
-              href="/product"
-              className="mono"
-              style={{
-                border: "1px solid rgba(15, 23, 42, 0.16)",
-                padding: "10px 14px",
-                borderRadius: 999,
-                background: "rgba(255,255,255,0.65)",
-                boxShadow: "0 10px 24px rgba(15, 23, 42, 0.06)",
-              }}
-            >
-              /product
-            </Link>
-          </div>
-        </div>
-      </Section>
+        </Box>
+
+        {/* RIGHT (≈30%) */}
+        <Box
+          id="request-brief"
+          sx={{
+            position: { md: "sticky" },
+            top: { md: 18 },
+            alignSelf: "start",
+          }}
+        >
+          {/* Keep this as your existing “request technical brief” form */}
+          <LeadCaptureCard
+            title="Request technical brief"
+            hint="Send us your email so we can share the technical brief."
+            source="home_tech_brief"
+          />
+        </Box>
+      </Box>
     </main>
   );
 }
