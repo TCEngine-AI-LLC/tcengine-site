@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { IconButton, Tooltip } from "@mui/material";
+import ActionIconButton from "@/src/ui/components/ActionIconButton";
 
 export default function GlassIconButton({
   icon,
@@ -19,33 +19,34 @@ export default function GlassIconButton({
   disabled?: boolean;
   ariaLabel?: string;
 }) {
-  const button = (
-    <IconButton
+  const isInternal = Boolean(href && href.startsWith("/"));
+  const isHttp = Boolean(href && /^https?:\/\//i.test(href ?? ""));
+  const target = href && !isInternal && isHttp ? "_blank" : undefined;
+  const rel = target ? "noreferrer" : undefined;
+
+  if (href) {
+    return (
+      <ActionIconButton
+        tooltip={tooltip}
+        aria-label={ariaLabel ?? tooltip}
+        disabled={disabled}
+        component={isInternal ? (Link as React.ElementType) : "a"}
+        {...(isInternal ? { href } : { href, target, rel })}
+      >
+        {icon}
+      </ActionIconButton>
+    );
+  }
+
+  return (
+    <ActionIconButton
+      tooltip={tooltip}
+      aria-label={ariaLabel ?? tooltip}
       onClick={onClick}
       disabled={disabled}
-      aria-label={ariaLabel ?? tooltip}
-      component={href ? (Link as React.ElementType) : "button"}
-      {...(href ? { href } : {})}
-      size="large"
-      sx={{
-        border: "1px solid",
-        borderColor: "divider",
-        borderRadius: 999,
-        backgroundColor: "rgba(255,255,255,0.08)",
-        backdropFilter: "blur(10px)",
-        boxShadow: "0 10px 24px rgba(0,0,0,0.25)",
-        color: "text.primary",
-        "&:hover": { backgroundColor: "rgba(255,255,255,0.14)" },
-      }}
+      component="button"
     >
       {icon}
-    </IconButton>
-  );
-
-  // Tooltip requires a wrapper to work with disabled buttons.
-  return (
-    <Tooltip title={tooltip}>
-      <span>{button}</span>
-    </Tooltip>
+    </ActionIconButton>
   );
 }

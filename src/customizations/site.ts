@@ -12,25 +12,36 @@ export const siteMeta = {
     "Disrupt your compliance workflow with deterministic logic, export control graphs, and AI-driven policy automation.",
   url: normalizeUrl(
     process.env.NEXT_PUBLIC_APP_URL ??
-      process.env.PUBLIC_BASE_URL ??
-      process.env.NEXT_PUBLIC_SITE_URL ??
-      "https://tcengine.com"
+    process.env.PUBLIC_BASE_URL ??
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    "https://tcengine.com"
   ),
   salesEmail:
     process.env.NEXT_PUBLIC_SALES_EMAIL ??
     process.env.CONTACT_TO_EMAIL ??
     "info@tcengine.com",
-  addressLine: process.env.NEXT_PUBLIC_ADDRESS_LINE ??
+  addressLine:
+    process.env.NEXT_PUBLIC_ADDRESS_LINE ??
     "201 W Main St., Fort Wayne, IN 46802, United States",
-  // Used only for schema.org JSON-LD. Override in env if you want your CEO profile instead.
   ceoLinkedIn:
     process.env.NEXT_PUBLIC_CEO_LINKEDIN ??
     "https://www.linkedin.com/company/trade-collaboration-engine/",
-  
   logo: {
     src: "/tcengine.png",
     alt: "TC Engine",
-    height: 60, // tweak if you want (24–32 usually looks right)
+    height: 60,
+  },
+
+  background: {
+    enabled: true,
+    image: "/bg/Hero-Zero-Emission-Passenger-Plane.jpg",
+    position: "center 20%",
+    opacity: 0.3,
+  },
+
+  heroBanner: {
+    enabled: true,
+    message: "AI Export Modernization",
   },
 } as const;
 

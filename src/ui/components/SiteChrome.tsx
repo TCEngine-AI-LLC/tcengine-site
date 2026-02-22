@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Box, Button, Container, Divider, Stack, Typography } from "@mui/material";
+import { Box, Button, Container, Divider, Paper, Stack, Typography } from "@mui/material";
 
 import BrandLogo from "@/src/ui/components/BrandLogo";
 import { NAV_ITEMS, siteMeta } from "@/src/customizations/site";
@@ -25,6 +25,7 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
                 key={it.href}
                 component={Link}
                 href={it.href}
+                prefetch={it.href === "/logs" ? false : undefined}
                 size="small"
                 color="inherit"
                 sx={{ opacity: 0.8, "&:hover": { opacity: 1 } }}
@@ -35,6 +36,32 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
           </Stack>
         </Stack>
 
+        {siteMeta.heroBanner?.enabled ? (
+          <Paper
+            variant="outlined"
+            sx={{
+              mt: 2,
+              px: 2,
+              py: 1,
+              bgcolor: "action.selected",
+              backdropFilter: "blur(10px)",
+              borderColor: "divider",
+            }}
+          >
+            <Typography
+              sx={{
+                fontWeight: 850,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: "text.secondary",
+                lineHeight: 1.2,
+              }}
+            >
+              {siteMeta.heroBanner.message}
+            </Typography>
+          </Paper>
+        ) : null}
+
         <Box component="main" sx={{ mt: 3 }}>
           {children}
         </Box>
@@ -43,7 +70,7 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
 
         <Box component="footer" sx={{ pb: 3 }}>
           <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
-            {new Date().getFullYear()} {siteMeta.brand} • {siteMeta.addressLine}
+            {new Date().getFullYear()} {siteMeta.brand} — {siteMeta.addressLine}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
             <span style={{ fontFamily: "var(--font-geist-mono)" }}>{siteMeta.salesEmail}</span>

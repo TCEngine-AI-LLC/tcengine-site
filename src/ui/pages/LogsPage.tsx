@@ -5,6 +5,7 @@ import { logsCopy } from "@/src/customizations/copy";
 import { linkedInConfig } from "@/src/customizations/linkedin";
 import Section from "@/src/ui/components/Section";
 import Surface from "@/src/ui/components/Surface";
+import LinkedInEmbeds from "@/src/ui/widgets/LinkedInEmbeds";
 
 export const metadata: Metadata = {
   title: "Daily logs",
@@ -58,31 +59,7 @@ export default function LogsPage() {
             </Typography>
           </Surface>
         ) : (
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: { xs: "1fr", md: "repeat(auto-fit, minmax(520px, 1fr))" },
-              gap: 2,
-            }}
-          >
-            {embeds.map((src) => (
-              <Surface key={src} sx={{ p: 0, overflow: "hidden" }}>
-                <Box
-                  component="iframe"
-                  src={src}
-                  loading="lazy"
-                  title="LinkedIn post"
-                  sx={{
-                    width: "100%",
-                    height: { xs: 720, md: 820 },
-                    border: 0,
-                    display: "block",
-                    background: "transparent",
-                  }}
-                />
-              </Surface>
-            ))}
-          </Box>
+          <LinkedInEmbeds embeds={embeds} />
         )}
       </Section>
     </Box>

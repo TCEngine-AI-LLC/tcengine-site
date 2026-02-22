@@ -52,14 +52,17 @@ export default function MarkdownProse({ html }: { html: string }) {
           borderRadius: 2,
           border: "1px solid",
           borderColor: "divider",
-          backgroundColor: "rgba(255,255,255,0.04)",
+          backgroundColor: "action.disabledBackground",
         },
 
         // Mermaid SVGs we emit as: /public/diagrams/*.svg
-        // Clamp max width so diagrams don't overpower the prose.
+        // ✅ Clamp size so they never dominate the page.
+        // ✅ Do NOT upscale. Only shrink when needed.
         "& img[src^='/diagrams/'], & img[src^='diagrams/']": {
-          width: "100%",
-          maxWidth: { xs: "100%", md: 860 },
+          width: "auto",
+          height: "auto",
+          maxWidth: { xs: "100%", md: 720 },
+          maxHeight: { xs: 520, md: 620 },
           marginLeft: "auto",
           marginRight: "auto",
         },
@@ -81,7 +84,7 @@ export default function MarkdownProse({ html }: { html: string }) {
           borderRadius: 2,
           border: "1px solid",
           borderColor: "divider",
-          backgroundColor: "rgba(255,255,255,0.06)",
+          backgroundColor: "action.disabledBackground",
         },
         "& code": {
           fontFamily: "var(--font-geist-mono)",

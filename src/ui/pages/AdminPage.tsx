@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { Box, Typography } from "@mui/material";
-import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 
 import { requireAdminOrRedirect } from "@/src/server/auth/requireAdmin";
 import prisma from "@/src/server/db/prisma";
+
 import Section from "@/src/ui/components/Section";
 import Surface from "@/src/ui/components/Surface";
-import ActionIconButton from "@/src/ui/components/ActionIconButton";
 import AdminStripeOneDollarTest from "@/src/ui/widgets/AdminStripeOneDollarTest";
 
 export const metadata: Metadata = {
@@ -39,53 +38,57 @@ export default async function AdminPage() {
   return (
     <Box component="main" sx={{ py: 2, pb: 6 }}>
       <Surface>
-        <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2, flexWrap: "wrap" }}>
-          <Box>
-            <Typography variant="overline" sx={{ color: "text.secondary", letterSpacing: "0.14em" }}>
-              Admin
-            </Typography>
-            <Typography variant="h3" sx={{ mt: 0.5, fontWeight: 900, letterSpacing: "-0.03em" }}>
-              Admin dashboard
-            </Typography>
-            <Typography sx={{ color: "text.secondary", mt: 1.2 }}>
-              Signed in as{" "}
-              <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)" }}>
-                {email}
-              </Box>
-            </Typography>
-          </Box>
+        <Typography variant="overline" sx={{ color: "text.secondary", letterSpacing: "0.14em" }}>
+          Admin
+        </Typography>
 
-          <ActionIconButton
-            tooltip="Logout"
-            aria-label="Logout"
+        <Typography variant="h3" sx={{ mt: 0.5, fontWeight: 900, letterSpacing: "-0.03em" }}>
+          Admin dashboard
+        </Typography>
+
+        <Typography sx={{ color: "text.secondary", mt: 1.2 }}>
+          Signed in as{" "}
+          <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)" }}>
+            {email}
+          </Box>
+        </Typography>
+
+        <Typography sx={{ mt: 1.2 }}>
+          <Box
             component="a"
             href="/api/auth/admin/logout"
+            sx={{
+              color: "primary.light",
+              textDecoration: "underline",
+              textUnderlineOffset: "3px",
+            }}
           >
-            <LogoutRoundedIcon />
-          </ActionIconButton>
-        </Box>
+            Logout
+          </Box>
+        </Typography>
       </Surface>
 
       <Section title="Customers">
         <Surface>
           {customers.length === 0 ? (
-            <Typography color="text.secondary">No customer activity yet.</Typography>
+            <Typography sx={{ color: "text.secondary" }}>
+              No customer activity yet.
+            </Typography>
           ) : (
-            <Box component="ul" sx={{ m: 0, pl: 3, lineHeight: 1.9 }}>
+            <Box component="ul" sx={{ m: 0, pl: 3, lineHeight: 1.85 }}>
               {customers.map((c) => {
                 const lastPurchase = c.purchases[0];
                 return (
-                  <li key={c.id}>
+                  <Box component="li" key={c.id} sx={{ mt: 0.6 }}>
                     <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)" }}>
                       {c.email}
                     </Box>
-                    {"  "}
-                    <Box component="span" sx={{ color: "text.secondary", opacity: 0.9 }}>
+                    <Typography component="span" sx={{ color: "text.secondary", ml: 1 }}>
                       {lastPurchase
                         ? `purchased ${lastPurchase.planId} (${lastPurchase.status})`
                         : "no purchases yet"}
-                    </Box>
-                  </li>
+                    </Typography>
+                  </Box>
                 );
               })}
             </Box>
@@ -95,37 +98,12 @@ export default async function AdminPage() {
 
       <Section title="Env status">
         <Surface>
-          <Box component="ul" sx={{ m: 0, pl: 3, lineHeight: 1.9, color: "text.secondary" }}>
-            <li>
-              Stripe secret key:{" "}
-              <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)", color: "text.primary" }}>
-                {yesNo(stripeOk)}
-              </Box>
-            </li>
-            <li>
-              Stripe webhook secret:{" "}
-              <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)", color: "text.primary" }}>
-                {yesNo(webhookOk)}
-              </Box>
-            </li>
-            <li>
-              Resend API key:{" "}
-              <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)", color: "text.primary" }}>
-                {yesNo(resendOk)}
-              </Box>
-            </li>
-            <li>
-              Turnstile secret key:{" "}
-              <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)", color: "text.primary" }}>
-                {yesNo(turnstileOk)}
-              </Box>
-            </li>
-            <li>
-              Turnstile site key:{" "}
-              <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)", color: "text.primary" }}>
-                {yesNo(turnstileSiteOk)}
-              </Box>
-            </li>
+          <Box component="ul" sx={{ m: 0, pl: 3, lineHeight: 1.85, color: "text.secondary" }}>
+            <li>Stripe secret key: <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)" }}>{yesNo(stripeOk)}</Box></li>
+            <li>Stripe webhook secret: <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)" }}>{yesNo(webhookOk)}</Box></li>
+            <li>Resend API key: <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)" }}>{yesNo(resendOk)}</Box></li>
+            <li>Turnstile secret key: <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)" }}>{yesNo(turnstileOk)}</Box></li>
+            <li>Turnstile site key: <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)" }}>{yesNo(turnstileSiteOk)}</Box></li>
           </Box>
         </Surface>
       </Section>

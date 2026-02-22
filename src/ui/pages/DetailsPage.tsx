@@ -18,10 +18,6 @@ export default async function DetailsPage() {
         <Typography variant="h4" sx={{ fontWeight: 900, mb: 0.5 }}>
           Details
         </Typography>
-        <Typography color="text.secondary">
-          Every markdown file under <span style={{ fontFamily: "var(--font-geist-mono)" }}>/markdowns</span> is
-          routable. Use this page to discover routes.
-        </Typography>
 
         <Stack spacing={1.2} sx={{ mt: 3 }}>
           {pages.length === 0 ? (
@@ -39,9 +35,9 @@ export default async function DetailsPage() {
                 sx={{
                   p: 2,
                   borderColor: "divider",
-                  bgcolor: "rgba(255,255,255,0.04)",
+                  bgcolor: "action.disabledBackground",
                   transition: "background-color 120ms ease",
-                  "&:hover": { bgcolor: "rgba(255,255,255,0.08)" },
+                  "&:hover": { bgcolor: "action.selected" },
                 }}
               >
                 <Typography sx={{ fontWeight: 850 }}>{p.title}</Typography>

@@ -1,43 +1,47 @@
 "use client";
 
 import * as React from "react";
-import { IconButton, type IconButtonProps, Tooltip } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
+import type { IconButtonProps } from "@mui/material/IconButton";
 
-/**
- * Standard icon button used across the site:
- * - theme-driven colors
- * - glass background
- * - divider border
- * - tooltip works even when disabled
- */
-export default function ActionIconButton({
-  tooltip,
-  children,
-  sx,
-  ...props
-}: IconButtonProps & { tooltip: string }) {
+type ActionIconButtonProps<C extends React.ElementType> = IconButtonProps<C> & {
+  tooltip: string;
+};
+
+export default function ActionIconButton<C extends React.ElementType = "button">(
+  props: ActionIconButtonProps<C>
+) {
+  const { tooltip, children, sx, ...rest } = props;
   const sxArr = Array.isArray(sx) ? sx : sx ? [sx] : [];
 
   return (
     <Tooltip title={tooltip}>
       <span>
         <IconButton
-          {...props}
-          size={props.size ?? "large"}
+          {...rest}
+          size={rest.size ?? "large"}
           sx={[
             {
               border: "1px solid",
               borderColor: "divider",
               borderRadius: 999,
               color: "text.primary",
-              backgroundColor: "rgba(255,255,255,0.08)",
+
+              // theme-driven glass
+              backgroundColor: "action.selected",
               backdropFilter: "blur(10px)",
+
               transition: "background-color 140ms ease, transform 140ms ease",
               "&:hover": {
-                backgroundColor: "rgba(255,255,255,0.14)",
+                backgroundColor: "action.hover",
                 transform: "translateY(-1px)",
               },
               "&:active": { transform: "translateY(0px)" },
+
+              "&.Mui-disabled": {
+                backgroundColor: "action.disabledBackground",
+                color: "text.disabled",
+              },
             },
             ...sxArr,
           ]}
