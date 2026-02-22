@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ShoppingCartCheckoutRoundedIcon from "@mui/icons-material/ShoppingCartCheckoutRounded";
+import GlassIconButton from "@/src/ui/components/GlassIconButton";
 
 import type { ConsultingPlanId } from "@/src/customizations/pricing";
 import TurnstileWidget from "@/src/ui/widgets/TurnstileWidget";
@@ -105,36 +106,29 @@ export default function PricingCheckout({
 
   return (
     <>
-      <Tooltip title={`Purchase: ${label}`}>
-        <IconButton
-          aria-label={`Purchase ${label}`}
-          onClick={() => setOpen(true)}
-          size="large"
-          sx={{
-            border: "1px solid rgba(15, 23, 42, 0.16)",
-            borderRadius: 999,
-            background: "rgba(255, 255, 255, 0.65)",
-            "&:hover": { background: "rgba(255, 255, 255, 0.9)" },
-          }}
-        >
-          <ShoppingCartCheckoutRoundedIcon />
-        </IconButton>
-      </Tooltip>
+      <GlassIconButton
+        icon={<ShoppingCartCheckoutRoundedIcon />}
+        tooltip={`Purchase: ${label}`}
+        onClick={() => setOpen(true)}
+        ariaLabel={`Purchase ${label}`}
+      />
 
       <Dialog open={open} onClose={close} fullWidth maxWidth="sm">
         <DialogTitle sx={{ fontWeight: 800 }}>
           Checkout — {label}
-          <IconButton
-            onClick={close}
-            aria-label="Close"
-            sx={{ position: "absolute", right: 10, top: 10 }}
-          >
-            <CloseRoundedIcon />
-          </IconButton>
+          <Tooltip title="Close">
+            <IconButton
+              onClick={close}
+              aria-label="Close"
+              sx={{ position: "absolute", right: 10, top: 10, color: "text.secondary" }}
+            >
+              <CloseRoundedIcon />
+            </IconButton>
+          </Tooltip>
         </DialogTitle>
         <DialogContent>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-            <Typography variant="body2" sx={{ color: "rgba(11, 15, 23, 0.65)" }}>
+            <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
               We’ll send a receipt to this email and follow up about scheduling.
             </Typography>
             <TextField
@@ -156,20 +150,15 @@ export default function PricingCheckout({
             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
               <Tooltip title="Proceed to Stripe Checkout">
                 <span>
-                  <IconButton
-                    onClick={startCheckout}
-                    disabled={status.kind === "submitting"}
-                    aria-label="Proceed to checkout"
-                    size="large"
-                    sx={{
-                      border: "1px solid rgba(15, 23, 42, 0.16)",
-                      borderRadius: 999,
-                      background: "rgba(255, 255, 255, 0.65)",
-                      "&:hover": { background: "rgba(255, 255, 255, 0.9)" },
-                    }}
-                  >
-                    <ShoppingCartCheckoutRoundedIcon />
-                  </IconButton>
+                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+                    <GlassIconButton
+                      icon={<ShoppingCartCheckoutRoundedIcon />}
+                      tooltip="Proceed to Stripe Checkout"
+                      onClick={startCheckout}
+                      disabled={status.kind === "submitting"}
+                      ariaLabel="Proceed to checkout"
+                    />
+                  </Box>
                 </span>
               </Tooltip>
             </Box>

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { Box, Divider, Paper, Typography } from "@mui/material";
 
 import { pricingCopy } from "@/src/customizations/copy";
 import Section from "@/src/ui/components/Section";
@@ -21,69 +23,111 @@ export default async function PricingPage({
   const success = typeof sp?.success === "string" ? sp.success : "";
 
   return (
-    <main style={{ padding: "20px 0 48px" }}>
-      <div className="heroPanel">
-        <div className="badge">Consulting</div>
-        <h1 style={{ marginTop: 12 }}>{pricingCopy.title}</h1>
-        <p style={{ fontSize: 16, marginTop: 12 }}>{pricingCopy.intro}</p>
+    <Box component="main" sx={{ py: 2, pb: 6 }}>
+      <Paper variant="outlined" sx={{ p: { xs: 2, sm: 3 }, bgcolor: "background.paper" }}>
+        <Typography
+          variant="overline"
+          sx={{ color: "text.secondary", letterSpacing: "0.14em" }}
+        >
+          Consulting
+        </Typography>
+
+        <Typography variant="h3" sx={{ mt: 0.5, fontWeight: 900, letterSpacing: "-0.03em" }}>
+          {pricingCopy.title}
+        </Typography>
+
+        <Typography color="text.secondary" sx={{ mt: 1.2, lineHeight: 1.85 }}>
+          {pricingCopy.intro}
+        </Typography>
+
         {success === "1" ? (
-          <div style={{ marginTop: 14 }} className="card">
-            <div style={{ fontWeight: 900, letterSpacing: "-0.02em" }}>Payment received.</div>
-            <p style={{ marginTop: 6 }}>
+          <Paper variant="outlined" sx={{ p: 2, mt: 2, bgcolor: "rgba(255,255,255,0.04)" }}>
+            <Typography sx={{ fontWeight: 850 }}>Payment received.</Typography>
+            <Typography color="text.secondary" sx={{ mt: 0.5 }}>
               Thanks — we’ll follow up to schedule the engagement.
-            </p>
-          </div>
+            </Typography>
+          </Paper>
         ) : null}
-      </div>
+      </Paper>
 
       <Section title="Plans">
-        <div className="grid2">
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" },
+            gap: 2,
+          }}
+        >
           {pricingCopy.plans.map((p) => (
-            <div key={p.id} className="card" style={{ position: "relative" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
-                <div>
-                  <div style={{ fontWeight: 900, letterSpacing: "-0.02em", fontSize: 18 }}>
+            <Paper key={p.id} variant="outlined" sx={{ p: 2.5, bgcolor: "background.paper" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                  gap: 2,
+                  flexWrap: "wrap",
+                }}
+              >
+                <Box>
+                  <Typography sx={{ fontWeight: 850, letterSpacing: "-0.02em", fontSize: 18 }}>
                     {p.title}
-                  </div>
-                  <p style={{ marginTop: 6 }}>{p.subtitle}</p>
-                </div>
+                  </Typography>
+                  <Typography color="text.secondary" sx={{ mt: 0.6 }}>
+                    {p.subtitle}
+                  </Typography>
+                </Box>
 
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 10 }}>
-                  <div style={{ fontWeight: 950, fontSize: 18 }}>{p.priceLabel}</div>
+                <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 1 }}>
+                  <Typography sx={{ fontWeight: 900, fontSize: 18 }}>{p.priceLabel}</Typography>
                   <PricingCheckout planId={p.id} label={p.title} />
-                </div>
-              </div>
+                </Box>
+              </Box>
 
-              <div className="hr" style={{ margin: "14px 0" }} />
-              <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.8, color: "rgba(11, 15, 23, 0.78)" }}>
+              <Divider sx={{ my: 2 }} />
+
+              <Box component="ul" sx={{ m: 0, pl: 3, lineHeight: 1.85, color: "text.secondary" }}>
                 {p.bullets.map((b) => (
-                  <li key={b}>{b}</li>
+                  <Box component="li" key={b} sx={{ mt: 0.5 }}>
+                    {b}
+                  </Box>
                 ))}
-              </ul>
-            </div>
+              </Box>
+            </Paper>
           ))}
-        </div>
+        </Box>
       </Section>
 
       <Section title={pricingCopy.howItWorks.title}>
-        <div className="card">
-          <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.8, color: "rgba(11, 15, 23, 0.78)" }}>
+        <Paper variant="outlined" sx={{ p: { xs: 2, sm: 3 }, bgcolor: "background.paper" }}>
+          <Box component="ul" sx={{ m: 0, pl: 3, lineHeight: 1.85, color: "text.secondary" }}>
             {pricingCopy.howItWorks.bullets.map((b) => (
-              <li key={b}>{b}</li>
+              <Box component="li" key={b} sx={{ mt: 0.5 }}>
+                {b}
+              </Box>
             ))}
-          </ul>
-        </div>
+          </Box>
+        </Paper>
       </Section>
 
       <Section title="Notes" subtle>
-        <div className="card">
-          <p>{pricingCopy.finePrint}</p>
-          <p style={{ marginTop: 12 }}>
-            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-            If checkout is blocked, go to <a className="mono" href="/verify-human?next=%2Fpricing">/verify-human</a>.
-          </p>
-        </div>
+        <Paper variant="outlined" sx={{ p: { xs: 2, sm: 3 }, bgcolor: "background.paper" }}>
+          <Typography color="text.secondary" sx={{ lineHeight: 1.85 }}>
+            {pricingCopy.finePrint}
+          </Typography>
+
+          <Typography color="text.secondary" sx={{ mt: 1.5 }}>
+            If checkout is blocked, go to{" "}
+            <Link
+              href="/verify-human?next=%2Fpricing"
+              style={{ textDecoration: "underline", fontFamily: "var(--font-geist-mono)" }}
+            >
+              /verify-human
+            </Link>
+            .
+          </Typography>
+        </Paper>
       </Section>
-    </main>
+    </Box>
   );
 }

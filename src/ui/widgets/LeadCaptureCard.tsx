@@ -1,9 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { Alert, Box, IconButton, TextField, Tooltip, Typography } from "@mui/material";
+import { Alert, Box, Paper, TextField, Typography } from "@mui/material";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 
+import GlassIconButton from "@/src/ui/components/GlassIconButton";
 import TurnstileWidget from "@/src/ui/widgets/TurnstileWidget";
 
 type Status =
@@ -11,6 +12,8 @@ type Status =
   | { kind: "submitting" }
   | { kind: "ok" }
   | { kind: "error"; message: string };
+
+type ApiResponse = { ok?: boolean; error?: string };
 
 export default function LeadCaptureCard({
   title,
@@ -21,7 +24,6 @@ export default function LeadCaptureCard({
   hint: string;
   source: string;
 }) {
-  type ApiResponse = { ok?: boolean; error?: string };
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
   const [email, setEmail] = React.useState("");
@@ -52,8 +54,7 @@ export default function LeadCaptureCard({
         if (!vr.ok || !vj?.ok) {
           setStatus({
             kind: "error",
-            message:
-              vj?.error ?? "Turnstile verification failed. Please refresh and try again.",
+            message: vj?.error ?? "Turnstile verification failed. Please refresh and try again.",
           });
           return;
         }
@@ -88,19 +89,18 @@ export default function LeadCaptureCard({
   };
 
   return (
-    <div className="heroPanel" aria-label={title}>
+    <Paper variant="outlined" sx={{ p: { xs: 2, sm: 3 }, bgcolor: "background.paper" }} aria-label={title}>
       <Typography variant="h6" sx={{ fontWeight: 800, letterSpacing: "-0.02em" }}>
         {title}
       </Typography>
-      <Typography
-        variant="body2"
-        sx={{ color: "rgba(11, 15, 23, 0.65)", mt: 0.6, lineHeight: 1.6 }}
-      >
+
+      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.6, lineHeight: 1.6 }}>
         {hint}
       </Typography>
 
       <Box sx={{ mt: 2, display: "flex", flexDirection: "column", gap: 1.4 }}>
         <TextField
+          fullWidth
           size="small"
           label="Email"
           value={email}
@@ -108,6 +108,7 @@ export default function LeadCaptureCard({
           autoComplete="email"
         />
         <TextField
+          fullWidth
           size="small"
           label="What are you building? (optional)"
           value={message}
@@ -116,40 +117,27 @@ export default function LeadCaptureCard({
           minRows={3}
         />
 
-        <div>{siteKey ? <TurnstileWidget siteKey={siteKey} onToken={setToken} action={source} /> : null}</div>
+        {siteKey ? (
+          <TurnstileWidget siteKey={siteKey} onToken={setToken} action={source} theme="dark" />
+        ) : null}
 
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Typography variant="caption" sx={{ color: "rgba(11, 15, 23, 0.55)" }}>
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1.5 }}>
+          <Typography variant="caption" color="text.secondary" sx={{ opacity: 0.8 }}>
             We’ll email you back. No spam.
           </Typography>
 
-          <Tooltip title="Submit your email">
-            <span>
-              <IconButton
-                onClick={submit}
-                disabled={status.kind === "submitting"}
-                aria-label="Submit lead"
-                size="large"
-                sx={{
-                  border: "1px solid rgba(15, 23, 42, 0.16)",
-                  borderRadius: 999,
-                  background: "rgba(255, 255, 255, 0.65)",
-                  "&:hover": { background: "rgba(255, 255, 255, 0.9)" },
-                }}
-              >
-                <SendRoundedIcon />
-              </IconButton>
-            </span>
-          </Tooltip>
+          <GlassIconButton
+            icon={<SendRoundedIcon />}
+            tooltip="Submit your email"
+            onClick={submit}
+            disabled={status.kind === "submitting"}
+            ariaLabel="Submit lead"
+          />
         </Box>
 
-        {status.kind === "ok" ? (
-          <Alert severity="success">Thanks — we’ll follow up shortly.</Alert>
-        ) : null}
-        {status.kind === "error" ? (
-          <Alert severity="error">{status.message}</Alert>
-        ) : null}
+        {status.kind === "ok" ? <Alert severity="success">Thanks — we’ll follow up shortly.</Alert> : null}
+        {status.kind === "error" ? <Alert severity="error">{status.message}</Alert> : null}
       </Box>
-    </div>
+    </Paper>
   );
 }

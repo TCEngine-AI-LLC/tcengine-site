@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Alert, IconButton, Tooltip } from "@mui/material";
 import ShoppingCartCheckoutRoundedIcon from "@mui/icons-material/ShoppingCartCheckoutRounded";
+import GlassIconButton from "../components/GlassIconButton";
 
 type ApiResp = { ok?: boolean; url?: string; error?: string };
 
@@ -30,19 +31,12 @@ export default function AdminStripeOneDollarTestButton() {
     <div>
       <Tooltip title="Run $1 Stripe Checkout test (admin-only)">
         <span>
-          <IconButton
+          <GlassIconButton
+            icon={<ShoppingCartCheckoutRoundedIcon />}
+            tooltip="Run $1 Stripe Checkout test (admin-only)"
             onClick={run}
-            aria-label="Run $1 Stripe test checkout"
-            size="large"
-            sx={{
-              border: "1px solid rgba(15, 23, 42, 0.16)",
-              borderRadius: 999,
-              background: "rgba(255, 255, 255, 0.65)",
-              "&:hover": { background: "rgba(255, 255, 255, 0.9)" },
-            }}
-          >
-            <ShoppingCartCheckoutRoundedIcon />
-          </IconButton>
+            ariaLabel="Run $1 Stripe test checkout"
+          />
         </span>
       </Tooltip>
 

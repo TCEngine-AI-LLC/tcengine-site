@@ -1,5 +1,6 @@
 "use client";
 
+import { Paper, Typography } from "@mui/material";
 import * as React from "react";
 
 declare global {
@@ -20,7 +21,7 @@ export default function TurnstileWidget({
   siteKey,
   onToken,
   action,
-  theme = "light",
+  theme = "dark",
 }: {
   siteKey: string;
   onToken: (token: string) => void;
@@ -90,11 +91,11 @@ export default function TurnstileWidget({
 
   if (!siteKey) {
     return (
-      <div className="card" style={{ boxShadow: "none" }}>
-        <div className="small" style={{ color: "rgba(11, 15, 23, 0.65)" }}>
-          Missing <span className="mono">NEXT_PUBLIC_TURNSTILE_SITE_KEY</span>.
-        </div>
-      </div>
+      <Paper variant="outlined" sx={{ p: 2, bgcolor: "background.paper" }}>
+        <Typography variant="body2" color="text.secondary">
+          Missing <span style={{ fontFamily: "var(--font-geist-mono)" }}>NEXT_PUBLIC_TURNSTILE_SITE_KEY</span>.
+        </Typography>
+      </Paper>
     );
   }
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Box } from "@mui/material";
 
 import AdminLoginForm from "@/src/ui/widgets/AdminLoginForm";
 
@@ -14,14 +15,13 @@ export default function LoginPage({
   searchParams?: Record<string, string | string[] | undefined>;
 }) {
   const nextPathRaw = searchParams?.next;
-  const nextPath =
-    typeof nextPathRaw === "string" && nextPathRaw.startsWith("/")
-      ? nextPathRaw
-      : "/admin";
+  const nextPath = typeof nextPathRaw === "string" && nextPathRaw.startsWith("/") ? nextPathRaw : "/admin";
 
   return (
-    <main style={{ padding: "20px 0 48px" }}>
-      <AdminLoginForm nextPath={nextPath} />
-    </main>
+    <Box component="main" sx={{ py: 2, pb: 6, display: "flex", justifyContent: "center" }}>
+      <Box sx={{ width: "100%", maxWidth: 520 }}>
+        <AdminLoginForm nextPath={nextPath} />
+      </Box>
+    </Box>
   );
 }

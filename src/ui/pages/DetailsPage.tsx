@@ -39,9 +39,9 @@ export default async function DetailsPage() {
                 sx={{
                   p: 2,
                   borderColor: "divider",
-                  bgcolor: "rgba(148,163,184,0.05)",
+                  bgcolor: "rgba(255,255,255,0.04)",
                   transition: "background-color 120ms ease",
-                  "&:hover": { bgcolor: "rgba(148,163,184,0.10)" },
+                  "&:hover": { bgcolor: "rgba(255,255,255,0.08)" },
                 }}
               >
                 <Typography sx={{ fontWeight: 850 }}>{p.title}</Typography>

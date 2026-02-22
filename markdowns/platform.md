@@ -1,22 +1,22 @@
 ---
 title: Platform
-description: AIEM deli [oai_citation:5‡TC_Engine_Website_Rebranding_Copy_r1.docx](sediment://file_000000007be071f5800fc54fa0e7ece8)erministic enforcement.
+description: About our Platform and what it does
 ---
 
-# The AIEM Platform
+## The AIEM Platform
 
 AIEM delivers three integrated capabilities:
 
-## Architecture
+### Architecture
 Design of export-control operating models for digital engineering ecosystems.
 
-## Data Science
+### Data Science
 Graph modeling, AI reasoning, and structured regulatory intelligence.
 
-## Infrastructure
+### Infrastructure
 Deterministic enforcement embedded directly into enterprise environments.
 
-## The outcome
+### The outcome
 
 Organizations achieve:
 

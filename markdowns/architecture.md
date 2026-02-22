@@ -1,6 +1,6 @@
 ---
 title: Architecture
-description: This references your existing svg for the stack, and also embeds a new mermaid diagram for “Unified AIEM Architecture” (from the doc). 【259:0†TC_Engine_Website_Rebranding_Copy_r0.docx†L124-L155】【259:1†TC_Engine_Website_Rebranding_Copy_r1.docx†L ￼ ￼deterministic release decision flow.
+description: Architecture of AIEM
 ---
 
 ## The Architecture

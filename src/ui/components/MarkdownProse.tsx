@@ -24,6 +24,7 @@ export default function MarkdownProse({ html }: { html: string }) {
           mt: 2.5,
           mb: 1,
         },
+
         "& p": {
           color: "text.secondary",
           lineHeight: 1.85,
@@ -36,11 +37,14 @@ export default function MarkdownProse({ html }: { html: string }) {
           mt: 1,
         },
         "& li": { mt: 0.5 },
+
         "& a": {
           color: "primary.light",
           textDecoration: "underline",
           textUnderlineOffset: "3px",
         },
+
+        // Default images
         "& img": {
           maxWidth: "100%",
           height: "auto",
@@ -50,15 +54,18 @@ export default function MarkdownProse({ html }: { html: string }) {
           borderRadius: 2,
           border: "1px solid",
           borderColor: "divider",
-          backgroundColor: "rgba(148,163,184,0.06)",
+          backgroundColor: "rgba(255,255,255,0.04)",
           padding: 1,
         },
-        "& img[src^='/diagrams/']": {
+
+        // Mermaid diagrams: treat like “content-width” markdown (prevents huge feel on wide screens)
+        "& img[src^='/diagrams/'], & img[src^='diagrams/']": {
           width: "100%",
-          maxWidth: { xs: "100%", md: 920 },
+          maxWidth: 760,
           marginLeft: "auto",
           marginRight: "auto",
         },
+
         "& table": {
           width: "100%",
           borderCollapse: "collapse",
@@ -70,37 +77,33 @@ export default function MarkdownProse({ html }: { html: string }) {
           padding: 10,
           verticalAlign: "top",
         },
+
         "& pre": {
           overflowX: "auto",
           padding: 16,
           borderRadius: 2,
           border: "1px solid",
           borderColor: "divider",
-          backgroundColor: "rgba(148,163,184,0.08)",
+          backgroundColor: "rgba(255,255,255,0.06)",
         },
         "& code": {
           fontFamily: "var(--font-geist-mono)",
           fontSize: "0.95em",
         },
+
         "& hr": {
           border: 0,
           height: "1px",
-          backgroundColor: "divider",
-          margin: "24px 0",
+          bgcolor: "divider",
+          my: 3,
         },
+
         "& blockquote": {
           margin: 0,
           paddingLeft: 16,
           borderLeft: "3px solid",
           borderColor: "divider",
           color: "text.secondary",
-        },
-        "& img[src^='/diagrams/'], & img[src^='diagrams/']": {
-          width: "auto !important",
-          maxWidth: "100%",
-          height: "auto",
-          marginLeft: "auto",
-          marginRight: "auto",
         },
       }}
       dangerouslySetInnerHTML={{ __html: html }}

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Alert, Box, Typography } from "@mui/material";
+import { Alert, Box, Paper, Typography } from "@mui/material";
 
 import TurnstileWidget from "@/src/ui/widgets/TurnstileWidget";
 
@@ -50,34 +50,26 @@ export default function VerifyHumanClient({ nextPath }: { nextPath: string }) {
   }, [nextPath, token]);
 
   return (
-    <main style={{ padding: "20px 0 48px" }}>
-      <div className="heroPanel">
+    <Box component="main" sx={{ py: 2, pb: 6 }}>
+      <Paper variant="outlined" sx={{ p: { xs: 2, sm: 3 }, bgcolor: "background.paper" }}>
         <Typography variant="h5" sx={{ fontWeight: 900, letterSpacing: "-0.02em" }}>
           Verify you’re human
         </Typography>
-        <Typography variant="body2" sx={{ color: "rgba(11, 15, 23, 0.65)", mt: 1 }}>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1, lineHeight: 1.6 }}>
           This prevents bot spam and protects our checkout + inbox.
         </Typography>
 
         <Box sx={{ mt: 2 }}>
           {siteKey ? (
-            <TurnstileWidget
-              siteKey={siteKey}
-              onToken={setToken}
-              action="verify_human"
-            />
+            <TurnstileWidget siteKey={siteKey} onToken={setToken} action="verify_human" theme="dark" />
           ) : null}
         </Box>
 
         <Box sx={{ mt: 2 }}>
-          {status.kind === "verifying" ? (
-            <Alert severity="info">Verifying…</Alert>
-          ) : null}
-          {status.kind === "error" ? (
-            <Alert severity="error">{status.message}</Alert>
-          ) : null}
+          {status.kind === "verifying" ? <Alert severity="info">Verifying…</Alert> : null}
+          {status.kind === "error" ? <Alert severity="error">{status.message}</Alert> : null}
         </Box>
-      </div>
-    </main>
+      </Paper>
+    </Box>
   );
 }

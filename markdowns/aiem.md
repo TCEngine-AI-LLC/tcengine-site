@@ -1,9 +1,9 @@
 ---
 title: AIEM
-description: AI Export Mod [oai_citation:4‡TC_Engine_Website_Rebranding_Copy_r1.docx](sediment://file_000000007be071f5800fc54fa0e7ece8)e control plane for controlled technology.
+description: AI Export Modernization Approach and Mission
 ---
 
-# The AIEM Stack™
+## The AIEM Stack™
 
 **THE MISSION:** Protect National Military-Industrial Intellectual Property in the Digital Era.
 
@@ -11,7 +11,7 @@ Modern military advantage resides in software, data, and digital engineering env
 
 AIEM secures the intangible battlespace.
 
-## The threat
+### The threat
 
 Export controls were designed for physical exports.
 
@@ -37,7 +37,7 @@ Result:
 - Innovation slowdown
 - National IP leakage
 
-## The shift
+### The shift
 
 Export compliance must evolve from:
 

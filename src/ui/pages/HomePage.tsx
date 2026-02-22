@@ -8,6 +8,8 @@ import { siteMeta } from "@/src/customizations/site";
 import IconCtaButton from "@/src/ui/components/IconCtaButton";
 import LeadCaptureCard from "@/src/ui/widgets/LeadCaptureCard";
 import MarkdownFromFile from "../components/MarkdownFromFile";
+import { homeCopy } from "@/src/customizations/copy";
+
 
 export const metadata: Metadata = {
   title: siteMeta.title,
@@ -58,8 +60,8 @@ export default function HomePage() {
         >
           {/* Keep this as your existing “request technical brief” form */}
           <LeadCaptureCard
-            title="Request technical brief"
-            hint="Send us your email so we can share the technical brief."
+            title={homeCopy.ctas.primary.label}
+            hint={homeCopy.ctas.primary.hint}
             source="home_tech_brief"
           />
         </Box>
