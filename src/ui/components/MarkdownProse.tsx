@@ -24,7 +24,6 @@ export default function MarkdownProse({ html }: { html: string }) {
           mt: 2.5,
           mb: 1,
         },
-
         "& p": {
           color: "text.secondary",
           lineHeight: 1.85,
@@ -37,14 +36,13 @@ export default function MarkdownProse({ html }: { html: string }) {
           mt: 1,
         },
         "& li": { mt: 0.5 },
-
         "& a": {
           color: "primary.light",
           textDecoration: "underline",
           textUnderlineOffset: "3px",
         },
 
-        // Default images
+        // Base image styling
         "& img": {
           maxWidth: "100%",
           height: "auto",
@@ -55,13 +53,13 @@ export default function MarkdownProse({ html }: { html: string }) {
           border: "1px solid",
           borderColor: "divider",
           backgroundColor: "rgba(255,255,255,0.04)",
-          padding: 1,
         },
 
-        // Mermaid diagrams: treat like “content-width” markdown (prevents huge feel on wide screens)
+        // Mermaid SVGs we emit as: /public/diagrams/*.svg
+        // Clamp max width so diagrams don't overpower the prose.
         "& img[src^='/diagrams/'], & img[src^='diagrams/']": {
           width: "100%",
-          maxWidth: 760,
+          maxWidth: { xs: "100%", md: 860 },
           marginLeft: "auto",
           marginRight: "auto",
         },
@@ -77,7 +75,6 @@ export default function MarkdownProse({ html }: { html: string }) {
           padding: 10,
           verticalAlign: "top",
         },
-
         "& pre": {
           overflowX: "auto",
           padding: 16,
@@ -90,14 +87,12 @@ export default function MarkdownProse({ html }: { html: string }) {
           fontFamily: "var(--font-geist-mono)",
           fontSize: "0.95em",
         },
-
         "& hr": {
           border: 0,
           height: "1px",
-          bgcolor: "divider",
-          my: 3,
+          backgroundColor: "divider",
+          margin: "24px 0",
         },
-
         "& blockquote": {
           margin: 0,
           paddingLeft: 16,

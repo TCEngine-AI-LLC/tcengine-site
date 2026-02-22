@@ -1,9 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { Alert, Box, Paper, Typography } from "@mui/material";
+import { Alert, Box, Typography } from "@mui/material";
 
 import TurnstileWidget from "@/src/ui/widgets/TurnstileWidget";
+import Surface from "@/src/ui/components/Surface";
 
 type Status =
   | { kind: "idle" }
@@ -30,19 +31,13 @@ export default function VerifyHumanClient({ nextPath }: { nextPath: string }) {
         });
         const j = (await r.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
         if (!r.ok || !j?.ok) {
-          setStatus({
-            kind: "error",
-            message: j?.error ?? "Verification failed. Please retry.",
-          });
+          setStatus({ kind: "error", message: j?.error ?? "Verification failed. Please retry." });
           return;
         }
         setStatus({ kind: "ok" });
         window.location.href = nextPath;
       } catch (e) {
-        setStatus({
-          kind: "error",
-          message: e instanceof Error ? e.message : "Unknown error",
-        });
+        setStatus({ kind: "error", message: e instanceof Error ? e.message : "Unknown error" });
       }
     };
 
@@ -51,25 +46,23 @@ export default function VerifyHumanClient({ nextPath }: { nextPath: string }) {
 
   return (
     <Box component="main" sx={{ py: 2, pb: 6 }}>
-      <Paper variant="outlined" sx={{ p: { xs: 2, sm: 3 }, bgcolor: "background.paper" }}>
+      <Surface>
         <Typography variant="h5" sx={{ fontWeight: 900, letterSpacing: "-0.02em" }}>
           Verify you’re human
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 1, lineHeight: 1.6 }}>
+        <Typography variant="body2" sx={{ color: "text.secondary", mt: 1 }}>
           This prevents bot spam and protects our checkout + inbox.
         </Typography>
 
         <Box sx={{ mt: 2 }}>
-          {siteKey ? (
-            <TurnstileWidget siteKey={siteKey} onToken={setToken} action="verify_human" theme="dark" />
-          ) : null}
+          {siteKey ? <TurnstileWidget siteKey={siteKey} onToken={setToken} action="verify_human" /> : null}
         </Box>
 
         <Box sx={{ mt: 2 }}>
           {status.kind === "verifying" ? <Alert severity="info">Verifying…</Alert> : null}
           {status.kind === "error" ? <Alert severity="error">{status.message}</Alert> : null}
         </Box>
-      </Paper>
+      </Surface>
     </Box>
   );
 }

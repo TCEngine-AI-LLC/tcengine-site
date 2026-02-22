@@ -13,15 +13,17 @@ export default function Section({
   children: React.ReactNode;
 }) {
   return (
-    <Box component="section" id={id} sx={{ mt: 4, mb: 4 }}>
+    <Box component="section" id={id} sx={{ my: 3 }}>
       {title ? (
         <Typography
           variant="h6"
           sx={{
+            fontSize: 22,
+            lineHeight: 1.2,
             fontWeight: 850,
             letterSpacing: "-0.02em",
-            mb: 1.5,
             color: subtle ? "text.secondary" : "text.primary",
+            mb: 1.5,
           }}
         >
           {title}

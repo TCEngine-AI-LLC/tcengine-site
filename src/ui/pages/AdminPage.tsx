@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
+import { Box, Typography } from "@mui/material";
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 
 import { requireAdminOrRedirect } from "@/src/server/auth/requireAdmin";
-import Section from "@/src/ui/components/Section";
 import prisma from "@/src/server/db/prisma";
-import AdminStripeOneDollarTest from "../widgets/AdminStripeOneDollarTest";
+import Section from "@/src/ui/components/Section";
+import Surface from "@/src/ui/components/Surface";
+import ActionIconButton from "@/src/ui/components/ActionIconButton";
+import AdminStripeOneDollarTest from "@/src/ui/widgets/AdminStripeOneDollarTest";
 
 export const metadata: Metadata = {
   title: "Admin",
@@ -25,7 +29,7 @@ export default async function AdminPage() {
       leads: { orderBy: { createdAt: "desc" }, take: 5 },
     },
   });
-  
+
   const stripeOk = Boolean(process.env.STRIPE_SECRET_KEY);
   const webhookOk = Boolean(process.env.STRIPE_WEBHOOK_SECRET);
   const resendOk = Boolean(process.env.RESEND_API_KEY);
@@ -33,87 +37,113 @@ export default async function AdminPage() {
   const turnstileSiteOk = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
 
   return (
-    <main style={{ padding: "20px 0 48px" }}>
-      <div className="heroPanel">
-        <div className="badge">Admin</div>
-        <h1 style={{ marginTop: 12 }}>Admin dashboard</h1>
-        <p style={{ fontSize: 16, marginTop: 12 }}>
-          Signed in as <span className="mono">{email}</span>
-        </p>
-        <p style={{ marginTop: 10 }} className="small">
-          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-          <a className="mono" href="/api/auth/admin/logout">Logout</a>
-        </p>
-      </div>
+    <Box component="main" sx={{ py: 2, pb: 6 }}>
+      <Surface>
+        <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2, flexWrap: "wrap" }}>
+          <Box>
+            <Typography variant="overline" sx={{ color: "text.secondary", letterSpacing: "0.14em" }}>
+              Admin
+            </Typography>
+            <Typography variant="h3" sx={{ mt: 0.5, fontWeight: 900, letterSpacing: "-0.03em" }}>
+              Admin dashboard
+            </Typography>
+            <Typography sx={{ color: "text.secondary", mt: 1.2 }}>
+              Signed in as{" "}
+              <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)" }}>
+                {email}
+              </Box>
+            </Typography>
+          </Box>
+
+          <ActionIconButton
+            tooltip="Logout"
+            aria-label="Logout"
+            component="a"
+            href="/api/auth/admin/logout"
+          >
+            <LogoutRoundedIcon />
+          </ActionIconButton>
+        </Box>
+      </Surface>
 
       <Section title="Customers">
-        <div className="card">
+        <Surface>
           {customers.length === 0 ? (
-            <p className="small">No customer activity yet.</p>
+            <Typography color="text.secondary">No customer activity yet.</Typography>
           ) : (
-            <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.9 }}>
+            <Box component="ul" sx={{ m: 0, pl: 3, lineHeight: 1.9 }}>
               {customers.map((c) => {
                 const lastPurchase = c.purchases[0];
                 return (
                   <li key={c.id}>
-                    <span className="mono">{c.email}</span>
-                    {lastPurchase ? (
-                      <>
-                        {"  "}
-                        <span style={{ color: "rgba(11, 15, 23, 0.7)" }}>
-                          purchased {lastPurchase.planId} ({lastPurchase.status})
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        {"  "}
-                        <span style={{ color: "rgba(11, 15, 23, 0.55)" }}>
-                          no purchases yet
-                        </span>
-                      </>
-                    )}
+                    <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)" }}>
+                      {c.email}
+                    </Box>
+                    {"  "}
+                    <Box component="span" sx={{ color: "text.secondary", opacity: 0.9 }}>
+                      {lastPurchase
+                        ? `purchased ${lastPurchase.planId} (${lastPurchase.status})`
+                        : "no purchases yet"}
+                    </Box>
                   </li>
                 );
               })}
-            </ul>
+            </Box>
           )}
-        </div>
+        </Surface>
       </Section>
+
       <Section title="Env status">
-        <div className="card">
-          <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.9, color: "rgba(11, 15, 23, 0.78)" }}>
+        <Surface>
+          <Box component="ul" sx={{ m: 0, pl: 3, lineHeight: 1.9, color: "text.secondary" }}>
             <li>
-              Stripe secret key: <span className="mono">{yesNo(stripeOk)}</span>
+              Stripe secret key:{" "}
+              <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)", color: "text.primary" }}>
+                {yesNo(stripeOk)}
+              </Box>
             </li>
             <li>
-              Stripe webhook secret: <span className="mono">{yesNo(webhookOk)}</span>
+              Stripe webhook secret:{" "}
+              <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)", color: "text.primary" }}>
+                {yesNo(webhookOk)}
+              </Box>
             </li>
             <li>
-              Resend API key: <span className="mono">{yesNo(resendOk)}</span>
+              Resend API key:{" "}
+              <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)", color: "text.primary" }}>
+                {yesNo(resendOk)}
+              </Box>
             </li>
             <li>
-              Turnstile secret key: <span className="mono">{yesNo(turnstileOk)}</span>
+              Turnstile secret key:{" "}
+              <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)", color: "text.primary" }}>
+                {yesNo(turnstileOk)}
+              </Box>
             </li>
             <li>
-              Turnstile site key: <span className="mono">{yesNo(turnstileSiteOk)}</span>
+              Turnstile site key:{" "}
+              <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)", color: "text.primary" }}>
+                {yesNo(turnstileSiteOk)}
+              </Box>
             </li>
-          </ul>
-        </div>
+          </Box>
+        </Surface>
       </Section>
 
       <Section title="Notes" subtle>
-        <div className="card">
-          <p>
+        <Surface>
+          <Typography sx={{ color: "text.secondary" }}>
             This admin view is intentionally minimal. Customer events are primarily monitored via email
             notifications (leads + Stripe webhooks).
-          </p>
-        </div>
+          </Typography>
+        </Surface>
       </Section>
+
       <Section title="Stripe test" subtle>
-        <div className="card">
+        <Surface>
           <AdminStripeOneDollarTest />
-        </div>
+        </Surface>
       </Section>
-    </main>
+    </Box>
   );
 }

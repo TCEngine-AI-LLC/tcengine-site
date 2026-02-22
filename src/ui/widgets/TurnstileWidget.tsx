@@ -1,16 +1,12 @@
 "use client";
 
-import { Paper, Typography } from "@mui/material";
 import * as React from "react";
+import { Alert } from "@mui/material";
 
 declare global {
   interface Window {
-    // Turnstile injects this.
     turnstile?: {
-      render: (
-        container: HTMLElement,
-        options: Record<string, unknown>
-      ) => string | number;
+      render: (container: HTMLElement, options: Record<string, unknown>) => string | number;
       remove?: (widgetId: string | number) => void;
       reset?: (widgetId?: string | number) => void;
     };
@@ -56,7 +52,6 @@ export default function TurnstileWidget({
     if (!mountRef.current) return;
     if (!window.turnstile?.render) return;
 
-    // Cleanup any previous widget instance.
     if (widgetIdRef.current && window.turnstile.remove) {
       try {
         window.turnstile.remove(widgetIdRef.current);
@@ -91,11 +86,9 @@ export default function TurnstileWidget({
 
   if (!siteKey) {
     return (
-      <Paper variant="outlined" sx={{ p: 2, bgcolor: "background.paper" }}>
-        <Typography variant="body2" color="text.secondary">
-          Missing <span style={{ fontFamily: "var(--font-geist-mono)" }}>NEXT_PUBLIC_TURNSTILE_SITE_KEY</span>.
-        </Typography>
-      </Paper>
+      <Alert severity="warning">
+        Missing <code>NEXT_PUBLIC_TURNSTILE_SITE_KEY</code>.
+      </Alert>
     );
   }
 

@@ -9,15 +9,14 @@ import {
   DialogTitle,
   IconButton,
   TextField,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ShoppingCartCheckoutRoundedIcon from "@mui/icons-material/ShoppingCartCheckoutRounded";
-import GlassIconButton from "@/src/ui/components/GlassIconButton";
 
 import type { ConsultingPlanId } from "@/src/customizations/pricing";
 import TurnstileWidget from "@/src/ui/widgets/TurnstileWidget";
+import ActionIconButton from "@/src/ui/components/ActionIconButton";
 
 type Status =
   | { kind: "idle" }
@@ -57,7 +56,6 @@ export default function PricingCheckout({
         return;
       }
 
-      // Verify Turnstile -> sets cookie.
       if (siteKey) {
         const vr = await fetch("/api/security/turnstile/verify", {
           method: "POST",
@@ -93,9 +91,7 @@ export default function PricingCheckout({
         return;
       }
 
-      if (typeof window !== "undefined") {
-        window.location.href = j.url;
-      }
+      window.location.href = j.url;
     } catch (e) {
       setStatus({
         kind: "error",
@@ -106,31 +102,40 @@ export default function PricingCheckout({
 
   return (
     <>
-      <GlassIconButton
-        icon={<ShoppingCartCheckoutRoundedIcon />}
+      <ActionIconButton
         tooltip={`Purchase: ${label}`}
+        aria-label={`Purchase ${label}`}
         onClick={() => setOpen(true)}
-        ariaLabel={`Purchase ${label}`}
-      />
+      >
+        <ShoppingCartCheckoutRoundedIcon />
+      </ActionIconButton>
 
-      <Dialog open={open} onClose={close} fullWidth maxWidth="sm">
-        <DialogTitle sx={{ fontWeight: 800 }}>
+      <Dialog
+        open={open}
+        onClose={close}
+        fullWidth
+        maxWidth="sm"
+        PaperProps={{
+          sx: {
+            bgcolor: "background.paper",
+            border: "1px solid",
+            borderColor: "divider",
+          },
+        }}
+      >
+        <DialogTitle sx={{ fontWeight: 850 }}>
           Checkout — {label}
-          <Tooltip title="Close">
-            <IconButton
-              onClick={close}
-              aria-label="Close"
-              sx={{ position: "absolute", right: 10, top: 10, color: "text.secondary" }}
-            >
-              <CloseRoundedIcon />
-            </IconButton>
-          </Tooltip>
+          <IconButton onClick={close} aria-label="Close" sx={{ position: "absolute", right: 10, top: 10 }}>
+            <CloseRoundedIcon />
+          </IconButton>
         </DialogTitle>
+
         <DialogContent>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-            <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
+            <Typography variant="body2" sx={{ color: "text.secondary" }}>
               We’ll send a receipt to this email and follow up about scheduling.
             </Typography>
+
             <TextField
               size="small"
               label="Email"
@@ -140,32 +145,21 @@ export default function PricingCheckout({
             />
 
             {siteKey ? (
-              <TurnstileWidget
-                siteKey={siteKey}
-                onToken={setToken}
-                action={`checkout_${planId}`}
-              />
+              <TurnstileWidget siteKey={siteKey} onToken={setToken} action={`checkout_${planId}`} />
             ) : null}
 
             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
-              <Tooltip title="Proceed to Stripe Checkout">
-                <span>
-                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
-                    <GlassIconButton
-                      icon={<ShoppingCartCheckoutRoundedIcon />}
-                      tooltip="Proceed to Stripe Checkout"
-                      onClick={startCheckout}
-                      disabled={status.kind === "submitting"}
-                      ariaLabel="Proceed to checkout"
-                    />
-                  </Box>
-                </span>
-              </Tooltip>
+              <ActionIconButton
+                tooltip="Proceed to Stripe Checkout"
+                onClick={startCheckout}
+                disabled={status.kind === "submitting"}
+                aria-label="Proceed to checkout"
+              >
+                <ShoppingCartCheckoutRoundedIcon />
+              </ActionIconButton>
             </Box>
 
-            {status.kind === "error" ? (
-              <Alert severity="error">{status.message}</Alert>
-            ) : null}
+            {status.kind === "error" ? <Alert severity="error">{status.message}</Alert> : null}
           </Box>
         </DialogContent>
       </Dialog>

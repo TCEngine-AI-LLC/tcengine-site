@@ -1,9 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { Alert, IconButton, Tooltip } from "@mui/material";
+import { Alert, Box } from "@mui/material";
 import ShoppingCartCheckoutRoundedIcon from "@mui/icons-material/ShoppingCartCheckoutRounded";
-import GlassIconButton from "../components/GlassIconButton";
+
+import ActionIconButton from "@/src/ui/components/ActionIconButton";
 
 type ApiResp = { ok?: boolean; url?: string; error?: string };
 
@@ -28,19 +29,16 @@ export default function AdminStripeOneDollarTestButton() {
   };
 
   return (
-    <div>
-      <Tooltip title="Run $1 Stripe Checkout test (admin-only)">
-        <span>
-          <GlassIconButton
-            icon={<ShoppingCartCheckoutRoundedIcon />}
-            tooltip="Run $1 Stripe Checkout test (admin-only)"
-            onClick={run}
-            ariaLabel="Run $1 Stripe test checkout"
-          />
-        </span>
-      </Tooltip>
+    <Box>
+      <ActionIconButton
+        tooltip="Run $1 Stripe Checkout test (admin-only)"
+        onClick={run}
+        aria-label="Run $1 Stripe test checkout"
+      >
+        <ShoppingCartCheckoutRoundedIcon />
+      </ActionIconButton>
 
       {err ? <Alert severity="error" sx={{ mt: 1 }}>{err}</Alert> : null}
-    </div>
+    </Box>
   );
 }

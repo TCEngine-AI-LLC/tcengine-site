@@ -1,19 +1,18 @@
 "use client";
 
 import * as React from "react";
-import { Alert, Box, Paper, TextField, Typography } from "@mui/material";
+import { Alert, Box, TextField, Typography } from "@mui/material";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 
-import GlassIconButton from "@/src/ui/components/GlassIconButton";
 import TurnstileWidget from "@/src/ui/widgets/TurnstileWidget";
+import Surface from "@/src/ui/components/Surface";
+import ActionIconButton from "@/src/ui/components/ActionIconButton";
 
 type Status =
   | { kind: "idle" }
   | { kind: "submitting" }
   | { kind: "ok" }
   | { kind: "error"; message: string };
-
-type ApiResponse = { ok?: boolean; error?: string };
 
 export default function LeadCaptureCard({
   title,
@@ -24,6 +23,7 @@ export default function LeadCaptureCard({
   hint: string;
   source: string;
 }) {
+  type ApiResponse = { ok?: boolean; error?: string };
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
   const [email, setEmail] = React.useState("");
@@ -89,18 +89,17 @@ export default function LeadCaptureCard({
   };
 
   return (
-    <Paper variant="outlined" sx={{ p: { xs: 2, sm: 3 }, bgcolor: "background.paper" }} aria-label={title}>
-      <Typography variant="h6" sx={{ fontWeight: 800, letterSpacing: "-0.02em" }}>
+    <Surface aria-label={title}>
+      <Typography variant="h6" sx={{ fontWeight: 850, letterSpacing: "-0.02em" }}>
         {title}
       </Typography>
 
-      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.6, lineHeight: 1.6 }}>
+      <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.8, lineHeight: 1.6 }}>
         {hint}
       </Typography>
 
       <Box sx={{ mt: 2, display: "flex", flexDirection: "column", gap: 1.4 }}>
         <TextField
-          fullWidth
           size="small"
           label="Email"
           value={email}
@@ -108,7 +107,6 @@ export default function LeadCaptureCard({
           autoComplete="email"
         />
         <TextField
-          fullWidth
           size="small"
           label="What are you building? (optional)"
           value={message}
@@ -118,26 +116,27 @@ export default function LeadCaptureCard({
         />
 
         {siteKey ? (
-          <TurnstileWidget siteKey={siteKey} onToken={setToken} action={source} theme="dark" />
+          <TurnstileWidget siteKey={siteKey} onToken={setToken} action={source} />
         ) : null}
 
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1.5 }}>
-          <Typography variant="caption" color="text.secondary" sx={{ opacity: 0.8 }}>
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Typography variant="caption" sx={{ color: "text.secondary", opacity: 0.85 }}>
             We’ll email you back. No spam.
           </Typography>
 
-          <GlassIconButton
-            icon={<SendRoundedIcon />}
+          <ActionIconButton
             tooltip="Submit your email"
             onClick={submit}
             disabled={status.kind === "submitting"}
-            ariaLabel="Submit lead"
-          />
+            aria-label="Submit lead"
+          >
+            <SendRoundedIcon />
+          </ActionIconButton>
         </Box>
 
         {status.kind === "ok" ? <Alert severity="success">Thanks — we’ll follow up shortly.</Alert> : null}
         {status.kind === "error" ? <Alert severity="error">{status.message}</Alert> : null}
       </Box>
-    </Paper>
+    </Surface>
   );
 }

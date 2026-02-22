@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Box, Divider, Paper, Typography } from "@mui/material";
+import { Alert, Box, Stack, Typography } from "@mui/material";
 
 import { pricingCopy } from "@/src/customizations/copy";
 import Section from "@/src/ui/components/Section";
+import Surface from "@/src/ui/components/Surface";
 import PricingCheckout from "@/src/ui/widgets/PricingCheckout";
 
 export const metadata: Metadata = {
@@ -24,11 +25,8 @@ export default async function PricingPage({
 
   return (
     <Box component="main" sx={{ py: 2, pb: 6 }}>
-      <Paper variant="outlined" sx={{ p: { xs: 2, sm: 3 }, bgcolor: "background.paper" }}>
-        <Typography
-          variant="overline"
-          sx={{ color: "text.secondary", letterSpacing: "0.14em" }}
-        >
+      <Surface>
+        <Typography variant="overline" sx={{ color: "text.secondary", letterSpacing: "0.14em" }}>
           Consulting
         </Typography>
 
@@ -36,19 +34,16 @@ export default async function PricingPage({
           {pricingCopy.title}
         </Typography>
 
-        <Typography color="text.secondary" sx={{ mt: 1.2, lineHeight: 1.85 }}>
+        <Typography sx={{ color: "text.secondary", mt: 1.2, maxWidth: 860 }}>
           {pricingCopy.intro}
         </Typography>
 
         {success === "1" ? (
-          <Paper variant="outlined" sx={{ p: 2, mt: 2, bgcolor: "rgba(255,255,255,0.04)" }}>
-            <Typography sx={{ fontWeight: 850 }}>Payment received.</Typography>
-            <Typography color="text.secondary" sx={{ mt: 0.5 }}>
-              Thanks — we’ll follow up to schedule the engagement.
-            </Typography>
-          </Paper>
+          <Alert severity="success" sx={{ mt: 2 }}>
+            Payment received. Thanks — we’ll follow up to schedule the engagement.
+          </Alert>
         ) : null}
-      </Paper>
+      </Surface>
 
       <Section title="Plans">
         <Box
@@ -59,74 +54,62 @@ export default async function PricingPage({
           }}
         >
           {pricingCopy.plans.map((p) => (
-            <Paper key={p.id} variant="outlined" sx={{ p: 2.5, bgcolor: "background.paper" }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "flex-start",
-                  gap: 2,
-                  flexWrap: "wrap",
-                }}
-              >
+            <Surface key={p.id} sx={{ position: "relative" }}>
+              <Stack direction="row" spacing={2} justifyContent="space-between" alignItems="flex-start">
                 <Box>
-                  <Typography sx={{ fontWeight: 850, letterSpacing: "-0.02em", fontSize: 18 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 850 }}>
                     {p.title}
                   </Typography>
-                  <Typography color="text.secondary" sx={{ mt: 0.6 }}>
+                  <Typography sx={{ color: "text.secondary", mt: 0.6 }}>
                     {p.subtitle}
                   </Typography>
                 </Box>
 
                 <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 1 }}>
-                  <Typography sx={{ fontWeight: 900, fontSize: 18 }}>{p.priceLabel}</Typography>
+                  <Typography sx={{ fontWeight: 950, fontSize: 18 }}>
+                    {p.priceLabel}
+                  </Typography>
                   <PricingCheckout planId={p.id} label={p.title} />
                 </Box>
-              </Box>
+              </Stack>
 
-              <Divider sx={{ my: 2 }} />
+              <Box sx={{ my: 2, borderTop: "1px solid", borderColor: "divider", opacity: 0.65 }} />
 
               <Box component="ul" sx={{ m: 0, pl: 3, lineHeight: 1.85, color: "text.secondary" }}>
                 {p.bullets.map((b) => (
-                  <Box component="li" key={b} sx={{ mt: 0.5 }}>
-                    {b}
-                  </Box>
+                  <li key={b}>{b}</li>
                 ))}
               </Box>
-            </Paper>
+            </Surface>
           ))}
         </Box>
       </Section>
 
       <Section title={pricingCopy.howItWorks.title}>
-        <Paper variant="outlined" sx={{ p: { xs: 2, sm: 3 }, bgcolor: "background.paper" }}>
+        <Surface>
           <Box component="ul" sx={{ m: 0, pl: 3, lineHeight: 1.85, color: "text.secondary" }}>
             {pricingCopy.howItWorks.bullets.map((b) => (
-              <Box component="li" key={b} sx={{ mt: 0.5 }}>
-                {b}
-              </Box>
+              <li key={b}>{b}</li>
             ))}
           </Box>
-        </Paper>
+        </Surface>
       </Section>
 
       <Section title="Notes" subtle>
-        <Paper variant="outlined" sx={{ p: { xs: 2, sm: 3 }, bgcolor: "background.paper" }}>
-          <Typography color="text.secondary" sx={{ lineHeight: 1.85 }}>
-            {pricingCopy.finePrint}
-          </Typography>
+        <Surface>
+          <Typography sx={{ color: "text.secondary" }}>{pricingCopy.finePrint}</Typography>
 
-          <Typography color="text.secondary" sx={{ mt: 1.5 }}>
+          <Typography sx={{ color: "text.secondary", mt: 1.5 }}>
             If checkout is blocked, go to{" "}
             <Link
               href="/verify-human?next=%2Fpricing"
-              style={{ textDecoration: "underline", fontFamily: "var(--font-geist-mono)" }}
+              style={{ textDecoration: "underline", textUnderlineOffset: "3px" }}
             >
               /verify-human
             </Link>
             .
           </Typography>
-        </Paper>
+        </Surface>
       </Section>
     </Box>
   );

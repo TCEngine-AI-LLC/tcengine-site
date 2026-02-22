@@ -1,10 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { Alert, Box, Paper, TextField, Typography } from "@mui/material";
+import { Alert, Box, TextField, Typography } from "@mui/material";
 import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
 
-import GlassIconButton from "@/src/ui/components/GlassIconButton";
+import Surface from "@/src/ui/components/Surface";
+import ActionIconButton from "@/src/ui/components/ActionIconButton";
 
 type Status =
   | { kind: "idle" }
@@ -31,23 +32,25 @@ export default function AdminLoginForm({ nextPath }: { nextPath: string }) {
       }
       setStatus({ kind: "sent" });
     } catch (e) {
-      setStatus({ kind: "error", message: e instanceof Error ? e.message : "Unknown error" });
+      setStatus({
+        kind: "error",
+        message: e instanceof Error ? e.message : "Unknown error",
+      });
     }
   };
 
   return (
-    <Paper variant="outlined" sx={{ p: { xs: 2, sm: 3 }, bgcolor: "background.paper" }}>
-      <Typography variant="h6" sx={{ fontWeight: 800, letterSpacing: "-0.02em" }}>
+    <Surface>
+      <Typography variant="h6" sx={{ fontWeight: 850, letterSpacing: "-0.02em" }}>
         Admin sign-in
       </Typography>
 
-      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.6, lineHeight: 1.6 }}>
+      <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.8 }}>
         Enter your admin email to receive a one-time login link.
       </Typography>
 
       <Box sx={{ mt: 2, display: "flex", flexDirection: "column", gap: 1.5 }}>
         <TextField
-          fullWidth
           size="small"
           label="Admin email"
           value={email}
@@ -56,13 +59,14 @@ export default function AdminLoginForm({ nextPath }: { nextPath: string }) {
         />
 
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <GlassIconButton
-            icon={<LoginRoundedIcon />}
+          <ActionIconButton
             tooltip="Send magic link"
             onClick={requestLink}
             disabled={status.kind === "submitting"}
-            ariaLabel="Send login link"
-          />
+            aria-label="Send login link"
+          >
+            <LoginRoundedIcon />
+          </ActionIconButton>
         </Box>
 
         {status.kind === "sent" ? (
@@ -70,6 +74,6 @@ export default function AdminLoginForm({ nextPath }: { nextPath: string }) {
         ) : null}
         {status.kind === "error" ? <Alert severity="error">{status.message}</Alert> : null}
       </Box>
-    </Paper>
+    </Surface>
   );
 }

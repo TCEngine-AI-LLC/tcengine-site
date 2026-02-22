@@ -15,13 +15,14 @@ export default function LoginPage({
   searchParams?: Record<string, string | string[] | undefined>;
 }) {
   const nextPathRaw = searchParams?.next;
-  const nextPath = typeof nextPathRaw === "string" && nextPathRaw.startsWith("/") ? nextPathRaw : "/admin";
+  const nextPath =
+    typeof nextPathRaw === "string" && nextPathRaw.startsWith("/")
+      ? nextPathRaw
+      : "/admin";
 
   return (
-    <Box component="main" sx={{ py: 2, pb: 6, display: "flex", justifyContent: "center" }}>
-      <Box sx={{ width: "100%", maxWidth: 520 }}>
-        <AdminLoginForm nextPath={nextPath} />
-      </Box>
+    <Box component="main" sx={{ py: 2, pb: 6 }}>
+      <AdminLoginForm nextPath={nextPath} />
     </Box>
   );
 }
