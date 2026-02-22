@@ -54,7 +54,7 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
                 letterSpacing: "0.14em",
                 textTransform: "uppercase",
                 color: "text.secondary",
-                lineHeight: 1.2,
+                lineHeight: 5.0,
               }}
             >
               {siteMeta.heroBanner.message}

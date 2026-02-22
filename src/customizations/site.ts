@@ -41,7 +41,7 @@ export const siteMeta = {
 
   heroBanner: {
     enabled: true,
-    message: "AI Export Modernization",
+    message: "AI Export Modernization (AIEM)",
   },
 } as const;
 
