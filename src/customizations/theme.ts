@@ -82,6 +82,13 @@ export const themeOptions: ThemeOptions = {
     fontFamily:
       'var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial',
     button: { textTransform: "none", fontWeight: 650 },
+    // ✅ Central page-title sizing (used by Typography variant="h3")
+    h3: {
+      fontSize: "clamp(0.80rem, 0.80rem + 1.4vw, 1.50rem)", // ~26px → ~34px
+      fontWeight: 900,
+      letterSpacing: "-0.03em",
+      lineHeight: 1.15,
+    },
   },
 
   components: {

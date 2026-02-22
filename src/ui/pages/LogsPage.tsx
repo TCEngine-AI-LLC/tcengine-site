@@ -8,7 +8,7 @@ import Surface from "@/src/ui/components/Surface";
 import LinkedInEmbeds from "@/src/ui/widgets/LinkedInEmbeds";
 
 export const metadata: Metadata = {
-  title: "Daily logs",
+  title: logsCopy.title,
   description: logsCopy.intro,
   alternates: { canonical: "/logs" },
 };

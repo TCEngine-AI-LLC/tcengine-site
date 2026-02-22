@@ -15,7 +15,7 @@ export default async function DetailsPage() {
   return (
     <Box component="main" sx={{ py: 2, pb: 6 }}>
       <Paper variant="outlined" sx={{ p: { xs: 2, sm: 3 }, bgcolor: "background.paper" }}>
-        <Typography variant="h4" sx={{ fontWeight: 900, mb: 0.5 }}>
+        <Typography variant="h5" sx={{ fontWeight: 900, mb: 0.5 }}>
           Details
         </Typography>
 

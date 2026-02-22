@@ -8,7 +8,7 @@ import Surface from "@/src/ui/components/Surface";
 import PricingCheckout from "@/src/ui/widgets/PricingCheckout";
 
 export const metadata: Metadata = {
-  title: "Consulting pricing",
+  title: pricingCopy.title,
   description: pricingCopy.intro,
   alternates: { canonical: "/pricing" },
 };
