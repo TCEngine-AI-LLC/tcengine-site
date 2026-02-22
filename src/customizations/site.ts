@@ -30,7 +30,7 @@ export const siteMeta = {
   logo: {
     src: "/tcengine.png",
     alt: "TC Engine",
-    height: 40, // tweak if you want (24–32 usually looks right)
+    height: 60, // tweak if you want (24–32 usually looks right)
   },
 } as const;
 

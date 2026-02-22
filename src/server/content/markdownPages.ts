@@ -216,3 +216,47 @@ export const getMarkdownPage = cache(async (slug: string[]): Promise<MarkdownPag
     html,
   };
 });
+
+export type RenderedMarkdown = {
+  title?: string;
+  description?: string;
+  html: string;
+};
+
+function resolveMarkdownRelPath(relPath: string): string {
+  // Explicit + safe: prevent path traversal
+  if (!relPath || relPath.includes("..") || relPath.startsWith("/") || relPath.startsWith("\\")) {
+    throw new Error(`[markdown] invalid relPath "${relPath}"`);
+  }
+
+  const full = path.resolve(MARKDOWN_DIR, relPath);
+  const root = path.resolve(MARKDOWN_DIR);
+
+  if (!full.startsWith(root + path.sep) && full !== root) {
+    throw new Error(`[markdown] relPath escapes markdown root: "${relPath}"`);
+  }
+
+  return full;
+}
+
+export const renderMarkdownFile = cache(async (relPath: string): Promise<RenderedMarkdown | null> => {
+  const filePath = resolveMarkdownRelPath(relPath);
+
+  const exists = await fs
+    .stat(filePath)
+    .then(() => true)
+    .catch(() => false);
+
+  if (!exists) return null;
+
+  const raw = await fs.readFile(filePath, "utf8");
+  const { title, description, body } = parseFrontmatter(raw);
+
+  const slug = slugFromMarkdownPath(filePath);
+  const slugBase = slugBaseFromSlug(slug);
+
+  const mdWithDiagrams = replaceMermaidWithImages(body, slugBase);
+  const html = await Promise.resolve(marked.parse(mdWithDiagrams));
+
+  return { title, description, html };
+});
