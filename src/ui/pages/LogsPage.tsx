@@ -10,16 +10,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/logs" },
 };
 
-function isLinkedInEmbedUrl(url: string) {
-  // LinkedIn blocks framing normal post URLs via frame-ancestors CSP.
-  // Only allow official embed endpoints.
-  return /^https:\/\/www\.linkedin\.com\/embed\//.test(url);
-}
-
 export default function LogsPage() {
-  const urls = linkedInConfig.embedUrls;
-  const embedUrls = urls.filter(isLinkedInEmbedUrl);
-  const nonEmbedUrls = urls.filter((u) => !isLinkedInEmbedUrl(u));
+  const embeds = linkedInConfig.embedUrls;
 
   return (
     <main style={{ padding: "20px 0 48px" }}>
@@ -29,68 +21,53 @@ export default function LogsPage() {
         <p style={{ fontSize: 16, marginTop: 12 }}>{logsCopy.intro}</p>
         <p style={{ marginTop: 10 }} className="small">
           Profile:{" "}
-          <a className="mono" href={linkedInConfig.profileUrl} target="_blank" rel="noreferrer">
+          <a
+            className="mono"
+            href={linkedInConfig.profileUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
             {linkedInConfig.profileUrl}
           </a>
         </p>
       </div>
 
       <Section title="Posts">
-        {urls.length === 0 ? (
+        {embeds.length === 0 ? (
           <div className="card">
-            <div style={{ fontWeight: 900, letterSpacing: "-0.02em" }}>No LinkedIn URLs configured.</div>
+            <div style={{ fontWeight: 900, letterSpacing: "-0.02em" }}>
+              No embeds configured.
+            </div>
             <p style={{ marginTop: 8 }}>{logsCopy.note}</p>
             <p style={{ marginTop: 10 }} className="mono small">
               LINKEDIN_EMBED_URLS=&quot;https://www.linkedin.com/embed/feed/update/urn:li:share:...&quot;
             </p>
           </div>
         ) : (
-          <>
-            {nonEmbedUrls.length > 0 ? (
-              <div className="card" style={{ marginBottom: 14 }}>
-                <div style={{ fontWeight: 900, letterSpacing: "-0.02em" }}>
-                  Some URLs can’t be embedded
-                </div>
-                <p style={{ marginTop: 8 }}>
-                  LinkedIn blocks framing normal post URLs via CSP (<span className="mono">frame-ancestors</span>).
-                  Use LinkedIn <span className="mono">/embed/…</span> URLs to render iframes.
-                </p>
-                <ul style={{ margin: "10px 0 0", paddingLeft: 18, lineHeight: 1.8 }}>
-                  {nonEmbedUrls.map((u) => (
-                    <li key={u}>
-                      <a className="mono" href={u} target="_blank" rel="noreferrer">
-                        {u}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))",
+              gap: 14,
+            }}
+          >
+            {embeds.map((src) => (
+              <div key={src} className="card" style={{ padding: 0, overflow: "hidden" }}>
+                <iframe
+                  src={src}
+                  loading="lazy"
+                  title="LinkedIn post"
+                  style={{
+                    width: "100%",
+                    height: 700,     // tweak 620–760 depending on how much gets clipped
+                    border: 0,
+                    display: "block",
+                    background: "transparent",
+                  }}
+                />
               </div>
-            ) : null}
-
-            {embedUrls.length === 0 ? (
-              <div className="card">
-                <div style={{ fontWeight: 900, letterSpacing: "-0.02em" }}>No valid embed URLs found.</div>
-                <p style={{ marginTop: 8 }}>
-                  Add LinkedIn embed URLs (not <span className="mono">/posts/…</span> URLs) to{" "}
-                  <span className="mono">LINKEDIN_EMBED_URLS</span>.
-                </p>
-              </div>
-            ) : (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 14 }}>
-                {embedUrls.map((src) => (
-                  <div key={src} className="card" style={{ padding: 0, overflow: "hidden" }}>
-                    <iframe
-                      className="responsiveEmbed"
-                      src={src}
-                      height={620}
-                      loading="lazy"
-                      title="LinkedIn post"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </>
+            ))}
+          </div>
         )}
       </Section>
     </main>
