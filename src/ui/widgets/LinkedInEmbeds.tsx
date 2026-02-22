@@ -14,13 +14,13 @@ function LinkedInEmbed({
   const [loaded, setLoaded] = React.useState(false);
   const notifiedRef = React.useRef(false);
 
-  const handleLoad = () => {
+  const handleLoad = React.useCallback(() => {
     setLoaded(true);
     if (!notifiedRef.current) {
       notifiedRef.current = true;
       onLoaded();
     }
-  };
+  }, [onLoaded]);
 
   return (
     <Surface
@@ -62,20 +62,18 @@ function LinkedInEmbed({
       <Box
         component="iframe"
         src={src}
-        loading="lazy"
         title="LinkedIn post"
+        // IMPORTANT: remove lazy so it doesn't wait for scroll/hover heuristics
+        loading="eager"
         onLoad={handleLoad}
         sx={{
+          position: "relative",
+          zIndex: 0,
           width: "100%",
           height: { xs: 720, md: 820 },
           border: 0,
           display: "block",
           background: "transparent",
-
-          // ✅ critical: iframe stays invisible until loaded
-          opacity: loaded ? 1 : 0,
-          pointerEvents: loaded ? "auto" : "none",
-          transition: "opacity 160ms ease",
         }}
       />
     </Surface>
@@ -90,7 +88,9 @@ export default function LinkedInEmbeds({ embeds }: { embeds: string[] }) {
     setLoadedCount((c) => Math.min(total, c + 1));
   }, [total]);
 
-  const showTopLoader = loadedCount < total;
+  // Minimal, non-annoying global loader:
+  // show only while the FIRST post hasn't loaded yet.
+  const showTopLoader = total > 0 && loadedCount === 0;
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -98,7 +98,7 @@ export default function LinkedInEmbeds({ embeds }: { embeds: string[] }) {
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, justifyContent: "center" }}>
           <CircularProgress size={18} />
           <Typography variant="caption" sx={{ color: "text.secondary" }}>
-            Loading posts {loadedCount}/{total}
+            Loading posts
           </Typography>
         </Box>
       ) : null}

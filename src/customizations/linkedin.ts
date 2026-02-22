@@ -1,3 +1,8 @@
+const normalizeEnv = (v: string | undefined): string | undefined => {
+  const s = (v ?? "").trim();
+  return s ? s : undefined;
+};
+
 const parseCsv = (v: string | undefined): string[] => {
   if (!v) return [];
   return v
@@ -8,10 +13,8 @@ const parseCsv = (v: string | undefined): string[] => {
 
 export const linkedInConfig = {
   profileUrl:
-    process.env.NEXT_PUBLIC_CEO_LINKEDIN ??
+    normalizeEnv(process.env.NEXT_PUBLIC_CEO_LINKEDIN) ??
     "https://www.linkedin.com/company/trade-collaboration-engine/",
 
-  // Use LinkedIn *embed* URLs (iframe src), not regular post URLs.
-  // Example format: https://www.linkedin.com/embed/feed/update/urn:li:share:XXXXXXXX
-  embedUrls: parseCsv(process.env.LINKEDIN_EMBED_URLS),
+  embedUrls: parseCsv(normalizeEnv(process.env.LINKEDIN_EMBED_URLS)),
 } as const;

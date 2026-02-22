@@ -140,7 +140,7 @@ export const pricingCopy = {
 export const logsCopy = {
   title: "Daily logs",
   intro:
-    "A lightweight feed of our CEO’s LinkedIn posts. Add embed URLs in one place — no UI logic pollution.",
+    "A lightweight feed of our CEO’s LinkedIn posts.",
   note:
     "To change what appears here, edit src/customizations/linkedin.ts (or set LINKEDIN_EMBED_URLS).",
 } as const;
