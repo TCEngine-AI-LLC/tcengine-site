@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { ADMIN_TEST_PRICE_ENV } from "@/src/customizations/pricing";
 import { isAdminEmail } from "@/src/server/auth/adminAllowlist";
 import { getAdminSessionEmail } from "@/src/server/auth/session";
-import { mustEnv } from "@/src/server/env";
+import { mustEnv, siteOrigin } from "@/src/server/env";
 import { getStripe } from "@/src/server/stripe/stripe";
 
 export const runtime = "nodejs";
@@ -17,7 +17,7 @@ export async function OPTIONS() {
 }
 
 export async function POST(req: Request) {
-  const origin = new URL(req.url).origin;
+  const origin = siteOrigin(req);
 
   const email = await getAdminSessionEmail();
   if (!email) {

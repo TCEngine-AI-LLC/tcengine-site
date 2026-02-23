@@ -2,15 +2,36 @@
 
 import * as React from "react";
 import { Box, CircularProgress, Skeleton, Typography } from "@mui/material";
-import Surface from "@/src/ui/components/Surface";
+import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 
-function LinkedInEmbed({
-  src,
-  onLoaded,
-}: {
-  src: string;
-  onLoaded: () => void;
-}) {
+import Surface from "@/src/ui/components/Surface";
+import ActionIconButton from "@/src/ui/components/ActionIconButton";
+import { useCookieConsent } from "@/src/ui/providers/CookieConsentProvider";
+import { cookieConsentCopy } from "@/src/customizations/consent";
+
+function ConsentGate({ onEnable }: { onEnable: () => void }) {
+  return (
+    <Surface sx={{ maxWidth: 860, mx: "auto" }}>
+      <Typography sx={{ fontWeight: 850 }}>LinkedIn posts</Typography>
+
+      <Typography variant="body2" sx={{ color: "text.secondary", mt: 0.8, lineHeight: 1.6 }}>
+        {cookieConsentCopy.marketingHint}
+      </Typography>
+
+      <Box sx={{ mt: 1.5, display: "flex", justifyContent: "flex-end" }}>
+        <ActionIconButton
+          tooltip={cookieConsentCopy.marketingLabel}
+          aria-label={cookieConsentCopy.marketingLabel}
+          onClick={onEnable}
+        >
+          <CheckRoundedIcon />
+        </ActionIconButton>
+      </Box>
+    </Surface>
+  );
+}
+
+function LinkedInEmbed({ src, onLoaded }: { src: string; onLoaded: () => void }) {
   const [loaded, setLoaded] = React.useState(false);
   const notifiedRef = React.useRef(false);
 
@@ -63,7 +84,7 @@ function LinkedInEmbed({
         component="iframe"
         src={src}
         title="LinkedIn post"
-        // IMPORTANT: remove lazy so it doesn't wait for scroll/hover heuristics
+        // Use eager to avoid browser "wait for interaction" heuristics you observed.
         loading="eager"
         onLoad={handleLoad}
         sx={{
@@ -81,15 +102,26 @@ function LinkedInEmbed({
 }
 
 export default function LinkedInEmbeds({ embeds }: { embeds: string[] }) {
+  const { consent, setMarketing } = useCookieConsent();
+
   const total = embeds.length;
   const [loadedCount, setLoadedCount] = React.useState(0);
+
+  React.useEffect(() => {
+    // Reset when consent flips on, or embed list changes
+    setLoadedCount(0);
+  }, [consent?.marketing, total]);
 
   const onOneLoaded = React.useCallback(() => {
     setLoadedCount((c) => Math.min(total, c + 1));
   }, [total]);
 
-  // Minimal, non-annoying global loader:
-  // show only while the FIRST post hasn't loaded yet.
+  // No consent => do NOT load any LinkedIn iframes.
+  if (!consent?.marketing) {
+    return <ConsentGate onEnable={() => setMarketing(true)} />;
+  }
+
+  // Minimal top loader: only until first post loads.
   const showTopLoader = total > 0 && loadedCount === 0;
 
   return (

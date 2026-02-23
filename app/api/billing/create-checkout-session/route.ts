@@ -8,6 +8,7 @@ import { requireTurnstileOr403 } from "@/src/server/security/turnstileGate";
 import { getStripe } from "@/src/server/stripe/stripe";
 import { isValidEmail } from "@/src/server/validation";
 import { logLead, upsertPurchasePending } from "@/src/server/crm/customerLog";
+import { siteOrigin } from "@/src/server/env";
 
 export const runtime = "nodejs";
 
@@ -38,7 +39,7 @@ export async function POST(req: Request) {
 
     const priceId = mustEnv(CONSULTING_PLANS[planIdRaw].stripePriceEnv);
     const stripe = getStripe();
-    const origin = new URL(req.url).origin;
+    const origin = siteOrigin(req);
 
     const ipHeader =
       req.headers.get("cf-connecting-ip") ??

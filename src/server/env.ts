@@ -15,3 +15,13 @@ export const truthyEnv = (name: string): boolean => {
   if (!v) return false;
   return v === "1" || v.toLowerCase() === "true" || v.toLowerCase() === "yes";
 };
+
+export function siteOrigin(req?: Request): string {
+  const v = process.env.SITE_URL ?? process.env.NEXT_PUBLIC_SITE_URL;
+  if (v) return v.replace(/\/+$/, "");
+
+  // Only allow fallback in dev to keep local DX.
+  if (!isProd && req) return new URL(req.url).origin;
+
+  throw new Error("Missing required environment variable: SITE_URL");
+}

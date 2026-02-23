@@ -6,6 +6,7 @@ import { Box, Button, Container, Divider, Paper, Stack, Typography } from "@mui/
 
 import BrandLogo from "@/src/ui/components/BrandLogo";
 import { NAV_ITEMS, siteMeta } from "@/src/customizations/site";
+import CookieConsentBanner from "../widgets/CookieConsentBanner";
 
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
   return (
@@ -64,6 +65,7 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
 
         <Box component="main" sx={{ mt: 3 }}>
           {children}
+          <CookieConsentBanner />
         </Box>
 
         <Divider sx={{ mt: 6, mb: 2, opacity: 0.2 }} />
