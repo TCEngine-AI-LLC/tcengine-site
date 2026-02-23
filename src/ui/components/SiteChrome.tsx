@@ -12,30 +12,41 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
       <Container maxWidth="lg" sx={{ py: 2 }}>
-        <Stack
-          direction={{ xs: "column", sm: "row" }}
-          alignItems={{ xs: "flex-start", sm: "center" }}
-          justifyContent="space-between"
-          spacing={2}
+                <Paper
+          variant="outlined"
+          sx={{
+            p: { xs: 1.25, sm: 1.5 },
+            bgcolor: "common.white",
+            color: "grey.900",
+            borderColor: "grey.200",
+            backgroundImage: "none", // IMPORTANT: override global MuiPaper blue tint
+          }}
         >
-          <BrandLogo />
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            alignItems={{ xs: "flex-start", sm: "center" }}
+            justifyContent="space-between"
+            spacing={2}
+          >
+            <BrandLogo />
 
-          <Stack component="nav" direction="row" spacing={1} sx={{ flexWrap: "wrap" }} aria-label="Primary">
-            {NAV_ITEMS.map((it) => (
-              <Button
-                key={it.href}
-                component={Link}
-                href={it.href}
-                prefetch={it.href === "/logs" ? false : undefined}
-                size="small"
-                color="inherit"
-                sx={{ opacity: 0.8, "&:hover": { opacity: 1 } }}
-              >
-                {it.label}
-              </Button>
-            ))}
+            <Stack component="nav" direction="row" spacing={1} sx={{ flexWrap: "wrap" }} aria-label="Primary">
+              {NAV_ITEMS.map((it) => (
+                <Button
+                  key={it.href}
+                  component={Link}
+                  href={it.href}
+                  prefetch={it.href === "/logs" ? false : undefined}
+                  size="small"
+                  color="inherit"
+                  sx={{ opacity: 0.8, "&:hover": { opacity: 1 } }}
+                >
+                  {it.label}
+                </Button>
+              ))}
+            </Stack>
           </Stack>
-        </Stack>
+        </Paper>
 
         {siteMeta.heroBanner?.enabled ? (
           <Paper
