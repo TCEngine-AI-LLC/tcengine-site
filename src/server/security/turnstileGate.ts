@@ -1,14 +1,21 @@
+// src/server/security/turnstileGate.ts
 import crypto from "node:crypto";
-import { isProd, truthyEnv, mustEnv } from "@/src/server/env";
+import { isProd, truthyEnv } from "@/src/server/env";
 
 export const TURNSTILE_COOKIE_NAME = "tc_turnstile_ok";
 export const TURNSTILE_COOKIE_MAX_AGE_S = 60 * 60 * 8;
 
-// Signed cookie: v1.<exp>.<nonce>.<sigHex>
-const TURNSTILE_COOKIE_VER = "v1";
-
+// Only for local DX (never in prod)
 export function turnstileBypassAllowed(): boolean {
   return truthyEnv("TURNSTILE_BYPASS_LOCAL") && !isProd;
+}
+
+function b64url(buf: Buffer): string {
+  return buf
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/g, "");
 }
 
 function timingSafeEq(a: string, b: string): boolean {
@@ -18,40 +25,51 @@ function timingSafeEq(a: string, b: string): boolean {
   return crypto.timingSafeEqual(ab, bb);
 }
 
-function hmacHex(input: string, secret: string): string {
-  return crypto.createHmac("sha256", secret).update(input).digest("hex");
+function hmacSign(input: string, secret: string): string {
+  const sig = crypto.createHmac("sha256", secret).update(input).digest();
+  return b64url(sig);
 }
 
-export function signTurnstileOkCookie(ttlSeconds = TURNSTILE_COOKIE_MAX_AGE_S): string {
-  // Reuse AUTH_TOKEN_SECRET so you don't add another required secret
-  const secret = mustEnv("AUTH_TOKEN_SECRET");
-  const exp = Math.floor(Date.now() / 1000) + ttlSeconds;
-  const nonce = crypto.randomBytes(16).toString("hex"); // 32 chars
-  const data = `${TURNSTILE_COOKIE_VER}.${exp}.${nonce}`;
-  const sig = hmacHex(data, secret);
-  return `${data}.${sig}`;
+function getSecret(): string {
+  // Reuse your existing secret (already required for admin tokens).
+  const s = process.env.AUTH_TOKEN_SECRET;
+  if (!s) throw new Error("Missing required environment variable: AUTH_TOKEN_SECRET");
+  return s;
 }
 
-function verifyTurnstileOkCookie(token: string): boolean {
-  const secret = process.env.AUTH_TOKEN_SECRET;
-  if (!secret) return false;
+// Cookie format: v1.<unixSec>.<nonce>.<sig>
+export function signTurnstileOkCookie(): string {
+  const secret = getSecret();
+  const ts = Math.floor(Date.now() / 1000);
+  const nonce = crypto.randomBytes(8).toString("hex");
+  const payload = `v1.${ts}.${nonce}`;
+  const sig = hmacSign(payload, secret);
+  return `${payload}.${sig}`;
+}
 
-  const parts = token.split(".");
+function verifyTurnstileOkCookie(v: string): boolean {
+  // Dev-only bypass
+  if (turnstileBypassAllowed() && v === "bypass") return true;
+
+  const secret = getSecret();
+  const parts = v.split(".");
   if (parts.length !== 4) return false;
 
-  const [ver, expStr, nonce, sig] = parts;
-  if (ver !== TURNSTILE_COOKIE_VER) return false;
-  if (!/^\d+$/.test(expStr)) return false;
+  const [ver, tsStr, nonce, sig] = parts;
+  if (ver !== "v1") return false;
+  if (!/^\d+$/.test(tsStr)) return false;
+  if (!/^[a-f0-9]{16}$/.test(nonce)) return false;
 
-  const exp = Number(expStr);
-  if (!Number.isFinite(exp)) return false;
-  if (exp < Math.floor(Date.now() / 1000)) return false;
+  const ts = Number(tsStr);
+  if (!Number.isFinite(ts)) return false;
 
-  if (!/^[a-f0-9]{32}$/.test(nonce)) return false;
-  if (!/^[a-f0-9]{64}$/.test(sig)) return false;
+  const now = Math.floor(Date.now() / 1000);
 
-  const data = `${ver}.${expStr}.${nonce}`;
-  const expected = hmacHex(data, secret);
+  // Basic skew + expiry check (belt + suspenders; cookie also has Max-Age)
+  if (ts > now + 60) return false;
+  if (ts < now - TURNSTILE_COOKIE_MAX_AGE_S) return false;
+
+  const expected = hmacSign(`${ver}.${tsStr}.${nonce}`, secret);
   return timingSafeEq(sig, expected);
 }
 

@@ -12,6 +12,7 @@ const securityHeaders = [
 
   // Turn on HSTS once tcengine.com is definitely HTTPS-only everywhere:
   // { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
+  { key: "Content-Security-Policy", value: "frame-ancestors 'none'; base-uri 'self'; object-src 'none'" },
 ];
 
 const nextConfig: NextConfig = {

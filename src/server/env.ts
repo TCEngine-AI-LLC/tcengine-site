@@ -17,8 +17,23 @@ export const truthyEnv = (name: string): boolean => {
 };
 
 export function siteOrigin(req?: Request): string {
-  const v = process.env.SITE_URL ?? process.env.NEXT_PUBLIC_SITE_URL;
-  if (v) return v.replace(/\/+$/, "");
+  const raw = process.env.SITE_URL ?? process.env.NEXT_PUBLIC_SITE_URL;
+
+  if (raw) {
+    const trimmed = raw.replace(/\/+$/, "");
+
+    // Enforce https in production
+    if (isProd && !trimmed.startsWith("https://")) {
+      throw new Error("SITE_URL must start with https:// in production");
+    }
+
+    // Ensure it's a valid URL and return the canonical origin
+    try {
+      return new URL(trimmed).origin;
+    } catch {
+      throw new Error(`Invalid SITE_URL: ${trimmed}`);
+    }
+  }
 
   // Only allow fallback in dev to keep local DX.
   if (!isProd && req) return new URL(req.url).origin;

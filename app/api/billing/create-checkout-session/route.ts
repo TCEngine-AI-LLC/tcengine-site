@@ -3,12 +3,11 @@ import { NextResponse } from "next/server";
 
 import { LeadKind } from "@/src/generated/prisma/enums";
 import { CONSULTING_PLANS, type ConsultingPlanId } from "@/src/customizations/pricing";
-import { mustEnv } from "@/src/server/env";
+import { mustEnv, siteOrigin } from "@/src/server/env";
 import { requireTurnstileOr403 } from "@/src/server/security/turnstileGate";
 import { getStripe } from "@/src/server/stripe/stripe";
 import { isValidEmail } from "@/src/server/validation";
 import { logLead, upsertPurchasePending } from "@/src/server/crm/customerLog";
-import { siteOrigin } from "@/src/server/env";
 
 export const runtime = "nodejs";
 
