@@ -7,7 +7,7 @@ const normalizeUrl = (url: string) => url.replace(/\/$/, "");
 
 export const siteMeta = {
   brand: "TC Engine",
-  title: "AI Export Management Engine",
+  title: "AI Export Modernization Engine",
   description:
     "Disrupt your compliance workflow with deterministic logic, export control graphs, and AI-driven policy automation.",
   url: normalizeUrl(

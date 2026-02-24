@@ -1,6 +1,6 @@
 export const homeCopy = {
   badge: "Built for teams shipping AI, software, and advanced technology across borders.",
-  heroTitle: "AI Export Management Engine",
+  heroTitle: "AI Export Modernization Engine",
   heroSubtitle: "From regulation to deterministic enforcement.",
   heroLead:
     "TC Engine transforms export regulations into computable graph systems — each structured, auditable, and enforceable in real operational workflows.",
