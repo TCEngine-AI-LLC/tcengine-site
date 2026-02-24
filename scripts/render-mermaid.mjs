@@ -82,10 +82,20 @@ function isMermaidDirective(meta) {
 function slugBaseFromMarkdownPath(filePath) {
   const rel = toPosix(path.relative(markdownDir, filePath));
   const noExt = rel.replace(/\.(md|mdx)$/, "");
-  const parts = noExt.split("/");
+  const parts = noExt.split("/").filter(Boolean);
+
+  // Remove trailing "index"
   if (parts[parts.length - 1] === "index") parts.pop();
-  const slug = parts.filter(Boolean);
-  return slug.length ? slug.join("--") : "root";
+
+  // IMPORTANT: match app routing behavior
+  // If last segment is "12-something", strip "12-" so diagrams become "something--m1.svg"
+  if (parts.length > 0) {
+    const last = parts[parts.length - 1];
+    const stripped = last.replace(/^\d+-/, "");
+    parts[parts.length - 1] = stripped || last; // safety
+  }
+
+  return parts.length ? parts.join("--") : "root";
 }
 
 function extractMermaidBlocks(mdText) {

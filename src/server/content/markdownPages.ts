@@ -11,7 +11,7 @@ export type MarkdownPage = {
   html: string;
 };
 
-type MarkdownPageIndexItem = Omit<MarkdownPage, "html"> & { filePath: string };
+type MarkdownPageIndexItem = Omit<MarkdownPage, "html"> & { filePath: string; order: number | null };
 
 const MARKDOWN_DIR = path.join(process.cwd(), "markdowns");
 
@@ -62,8 +62,23 @@ function slugFromMarkdownPath(filePath: string): string[] {
   const noExt = rel.replace(/\.(md|mdx)$/, "");
   const parts = noExt.split("/").filter(Boolean);
 
+  if (parts.length === 0) return [];
+
+  // If file is named like "12-platform", strip "12-" so route becomes "/platform".
+  const last = parts[parts.length - 1]!;
+  const stripped = last.replace(/^\d+-/, "");
+  parts[parts.length - 1] = stripped || last; // safety: don’t turn into empty
+
   if (parts[parts.length - 1] === "index") parts.pop();
   return parts;
+}
+
+function extractOrderPrefix(filePath: string): number | null {
+  const base = path.basename(filePath).replace(/\.(md|mdx)$/, "");
+  const m = base.match(/^(\d+)-/);
+  if (!m) return null;
+  const n = Number(m[1]);
+  return Number.isFinite(n) ? n : null;
 }
 
 function slugBaseFromSlug(slug: string[]) {
@@ -182,7 +197,8 @@ const getIndex = cache(async (): Promise<Map<string, MarkdownPageIndexItem>> => 
     const title = fmTitle ?? inferred.title;
     const description = fmDesc ?? inferred.description;
 
-    idx.set(href, { filePath, slug, href, title, description });
+    const order = extractOrderPrefix(filePath);
+    idx.set(href, { filePath, slug, href, title, description, order });
   }
 
   return idx;
@@ -190,7 +206,23 @@ const getIndex = cache(async (): Promise<Map<string, MarkdownPageIndexItem>> => 
 
 export const listMarkdownPages = cache(async () => {
   const idx = await getIndex();
-  return Array.from(idx.values()).sort((a, b) => a.href.localeCompare(b.href));
+  return Array.from(idx.values()).sort((a, b) => {
+    const ao = a.order;
+    const bo = b.order;
+
+    // both numbered: higher number first
+    if (ao !== null && bo !== null) {
+      if (bo !== ao) return bo - ao;
+      return a.href.localeCompare(b.href);
+    }
+
+    // one numbered: numbered first
+    if (ao !== null) return -1;
+    if (bo !== null) return 1;
+
+    // neither numbered: stable alphabetical
+    return a.href.localeCompare(b.href);
+  });
 });
 
 export const getMarkdownPage = cache(async (slug: string[]): Promise<MarkdownPage | null> => {

@@ -96,9 +96,9 @@ export const productCopy = {
 } as const;
 
 export const pricingCopy = {
-  title: "Consulting pricing",
+  title: "Export Controls Architecture",
   intro:
-    "Most teams start with a short block to validate classification logic and an enforcement path. If you need deeper design or implementation, use the sprint.",
+    "Chart your path to next-gen export controls",
   plans: [
     {
       id: "TEN_HOURS",
@@ -106,24 +106,21 @@ export const pricingCopy = {
       priceLabel: "$2,500",
       subtitle: "Get fast answers and high-leverage guidance.",
       bullets: [
-        "Architectural review of your AI export workflow",
-        "Export classification strategy and evidence design",
-        "Policy enforcement outline for CI/CD, inference, and releases",
-        "Audit trace approach: what to log, how to cite, how to store",
+        "Not consulting. Export controls infrastructure design initiation tailored to your most pressing needs.",
       ],
     },
-    {
-      id: "FORTY_HOURS",
-      title: "40-hour consulting sprint",
-      priceLabel: "$9,000",
-      subtitle: "Deeper design + integration planning (and optional implementation support).",
-      bullets: [
-        "End-to-end AIEM blueprint tailored to your stack",
-        "Module design: ExRegs / ExClass / ExAuth mapping to your needs",
-        "Integration plan: repos, services, CI/CD, model gateways",
-        "Proof-of-implementation plan with measurable milestones",
-      ],
-    },
+    // {
+    //   id: "FORTY_HOURS",
+    //   title: "40-hour consulting sprint",
+    //   priceLabel: "$9,000",
+    //   subtitle: "Deeper design + integration planning (and optional implementation support).",
+    //   bullets: [
+    //     "End-to-end AIEM blueprint tailored to your stack",
+    //     "Module design: ExRegs / ExClass / ExAuth mapping to your needs",
+    //     "Integration plan: repos, services, CI/CD, model gateways",
+    //     "Proof-of-implementation plan with measurable milestones",
+    //   ],
+    // },
   ],
   howItWorks: {
     title: "How the engagement works",

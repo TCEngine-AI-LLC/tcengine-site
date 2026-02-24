@@ -45,7 +45,7 @@ export default async function PricingPage({
         ) : null}
       </Surface>
 
-      <Section title="Plans">
+      <Section title="Plan">
         <Box
           sx={{
             display: "grid",
