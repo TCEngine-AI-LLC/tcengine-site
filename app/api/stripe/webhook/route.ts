@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
 
-import type { ConsultingPlanId } from "@/src/customizations/pricing";
+import { ConsultingPlanId } from "@/src/generated/prisma/enums";
 import { siteMeta } from "@/src/customizations/site";
 import { mustEnv } from "@/src/server/env";
 import { sendEmail } from "@/src/server/email/resend";
@@ -16,7 +16,11 @@ import { signIntakeLinkToken } from "@/src/server/auth/tokens";
 export const runtime = "nodejs";
 
 function isPlanId(v: unknown): v is ConsultingPlanId {
-  return v === "TEN_HOURS" || v === "FORTY_HOURS";
+  return (
+    v === ConsultingPlanId.TEN_HOURS ||
+    v === ConsultingPlanId.FORTY_HOURS ||
+    v === ConsultingPlanId.ONE_DOLLAR_TEST
+  );
 }
 
 export async function POST(req: Request) {
@@ -74,28 +78,29 @@ export async function POST(req: Request) {
       }
 
       const paid = session.payment_status === "paid";
+      const origin = siteOrigin(req);
 
-      // IMPORTANT: capture returned purchase
+      // ✅ Do this ONCE
       const purchase = await markPurchaseFromCheckoutSession({
         stripeCheckoutSessionId: session.id,
         email,
         planId: planIdRaw,
         paid,
         stripeCustomerId: typeof session.customer === "string" ? session.customer : undefined,
-        stripePaymentIntentId: typeof session.payment_intent === "string" ? session.payment_intent : undefined,
+        stripePaymentIntentId:
+          typeof session.payment_intent === "string" ? session.payment_intent : undefined,
         amountTotal: session.amount_total ?? undefined,
         currency: session.currency ?? undefined,
       });
 
-      // Optional notifications (don’t fail webhook if email fails)
       if (paid) {
+        const intakeToken = signIntakeLinkToken(purchase.id);
+        const intakeUrl = `${origin}/intake/${encodeURIComponent(intakeToken)}`;
+
         const adminTo =
           process.env.CONTACT_TO_EMAIL ??
           process.env.PURCHASE_NOTIFY_EMAIL ??
           siteMeta.salesEmail;
-        const origin = siteOrigin(req);
-        const intakeToken = signIntakeLinkToken(purchase.id);
-        const intakeUrl = `${origin}/intake/${encodeURIComponent(intakeToken)}`;
 
         try {
           await sendEmail({
@@ -113,9 +118,9 @@ export async function POST(req: Request) {
 
           await sendEmail({
             to: email,
-            subject: "TC Engine — payment received (next step: intake)",
+            subject: "TC Engine  payment received (next step: intake)",
             text: [
-              "Thanks — we received your payment.",
+              "Thanks  we received your payment.",
               "",
               `Plan: ${planIdRaw}`,
               "",
@@ -131,7 +136,6 @@ export async function POST(req: Request) {
         }
       }
     }
-
     return NextResponse.json({ ok: true });
   } catch (e) {
     console.error("[api/stripe/webhook] handler error", e);

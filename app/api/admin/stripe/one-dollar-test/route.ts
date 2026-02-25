@@ -38,6 +38,7 @@ export async function POST(req: Request) {
       success_url: `${origin}/admin?stripe_test=success`,
       cancel_url: `${origin}/admin?stripe_test=cancel`,
       metadata: {
+        planId: "ONE_DOLLAR_TEST",          // ✅ ADD THIS
         purpose: "admin_one_dollar_test",
         requestedBy: email,
       },

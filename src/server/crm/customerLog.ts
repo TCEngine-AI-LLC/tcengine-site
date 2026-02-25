@@ -1,6 +1,5 @@
 import { Prisma } from "@/src/generated/prisma/client";
-import { LeadKind, PurchaseStatus } from "@/src/generated/prisma/enums";
-import type { ConsultingPlanId } from "@/src/customizations/pricing";
+import { LeadKind, PurchaseStatus, type ConsultingPlanId } from "@/src/generated/prisma/enums";
 
 import prisma from "@/src/server/db/prisma";
 import { clampStr, isValidEmail } from "@/src/server/validation";
