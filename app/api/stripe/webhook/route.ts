@@ -10,6 +10,8 @@ import {
   markPurchaseFromCheckoutSession,
   recordStripeEventOnce,
 } from "@/src/server/crm/customerLog";
+import { siteOrigin } from "@/src/server/env";
+import { signIntakeLinkToken } from "@/src/server/auth/tokens";
 
 export const runtime = "nodejs";
 
@@ -73,14 +75,14 @@ export async function POST(req: Request) {
 
       const paid = session.payment_status === "paid";
 
-      await markPurchaseFromCheckoutSession({
+      // IMPORTANT: capture returned purchase
+      const purchase = await markPurchaseFromCheckoutSession({
         stripeCheckoutSessionId: session.id,
         email,
         planId: planIdRaw,
         paid,
         stripeCustomerId: typeof session.customer === "string" ? session.customer : undefined,
-        stripePaymentIntentId:
-          typeof session.payment_intent === "string" ? session.payment_intent : undefined,
+        stripePaymentIntentId: typeof session.payment_intent === "string" ? session.payment_intent : undefined,
         amountTotal: session.amount_total ?? undefined,
         currency: session.currency ?? undefined,
       });
@@ -91,6 +93,9 @@ export async function POST(req: Request) {
           process.env.CONTACT_TO_EMAIL ??
           process.env.PURCHASE_NOTIFY_EMAIL ??
           siteMeta.salesEmail;
+        const origin = siteOrigin(req);
+        const intakeToken = signIntakeLinkToken(purchase.id);
+        const intakeUrl = `${origin}/intake/${encodeURIComponent(intakeToken)}`;
 
         try {
           await sendEmail({
@@ -108,13 +113,14 @@ export async function POST(req: Request) {
 
           await sendEmail({
             to: email,
-            subject: "TC Engine — payment received",
+            subject: "TC Engine — payment received (next step: intake)",
             text: [
               "Thanks — we received your payment.",
               "",
               `Plan: ${planIdRaw}`,
               "",
-              "We'll follow up shortly to schedule the engagement.",
+              "Next step: complete the engagement intake form:",
+              intakeUrl,
               "",
               "If anything looks wrong, reply to this email.",
             ].join("\n"),
