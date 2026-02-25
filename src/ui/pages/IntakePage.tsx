@@ -19,8 +19,13 @@ function asRecord(v: unknown): Record<string, unknown> | null {
   return v as Record<string, unknown>;
 }
 
-export default async function IntakePage({ params }: { params: { token: string } }) {
-  const token = params?.token ?? "";
+export default async function IntakePage({
+  params,
+}: {
+  params: Promise<{ token: string }>;
+}) {
+  const { token } = await params;
+
   const v = verifyIntakeLinkToken(token);
   if (!v.ok) notFound();
 
