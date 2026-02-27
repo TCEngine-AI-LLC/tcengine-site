@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Box, Typography } from "@mui/material";
+import Link from "next/link";
 
 import { requireAdminOrRedirect } from "@/src/server/auth/requireAdmin";
 import prisma from "@/src/server/db/prisma";
@@ -7,6 +8,8 @@ import prisma from "@/src/server/db/prisma";
 import Section from "@/src/ui/components/Section";
 import Surface from "@/src/ui/components/Surface";
 import AdminStripeOneDollarTest from "@/src/ui/widgets/AdminStripeOneDollarTest";
+import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
+import ActionIconButton from "@/src/ui/components/ActionIconButton";
 
 export const metadata: Metadata = {
   title: "Admin",
@@ -75,23 +78,31 @@ export default async function AdminPage() {
               No customer activity yet.
             </Typography>
           ) : (
-            <Box component="ul" sx={{ m: 0, pl: 3, lineHeight: 1.85 }}>
-              {customers.map((c) => {
-                const lastPurchase = c.purchases[0];
-                return (
-                  <Box component="li" key={c.id} sx={{ mt: 0.6 }}>
-                    <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)" }}>
-                      {c.email}
+            <>
+              <Box component="ul" sx={{ m: 0, pl: 3, lineHeight: 1.85 }}>
+                {customers.map((c) => {
+                  const lastPurchase = c.purchases[0];
+                  return (
+                    <Box component="li" key={c.id} sx={{ mt: 0.6 }}>
+                      <Box component="span" sx={{ fontFamily: "var(--font-geist-mono)" }}>
+                        {c.email}
+                      </Box>
+                      <Typography component="span" sx={{ color: "text.secondary", ml: 1 }}>
+                        {lastPurchase
+                          ? `purchased ${lastPurchase.planId} (${lastPurchase.status})`
+                          : "no purchases yet"}
+                      </Typography>
                     </Box>
-                    <Typography component="span" sx={{ color: "text.secondary", ml: 1 }}>
-                      {lastPurchase
-                        ? `purchased ${lastPurchase.planId} (${lastPurchase.status})`
-                        : "no purchases yet"}
-                    </Typography>
-                  </Box>
-                );
-              })}
-            </Box>
+                  );
+                })}
+              </Box><Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
+                <Link href="/admin/customers">
+                  <ActionIconButton tooltip="Open customers page" aria-label="Open customers page">
+                    <PeopleRoundedIcon />
+                  </ActionIconButton>
+                </Link>
+              </Box>
+            </>
           )}
         </Surface>
       </Section>

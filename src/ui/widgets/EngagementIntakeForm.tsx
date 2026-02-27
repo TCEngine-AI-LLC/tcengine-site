@@ -5,6 +5,10 @@ import {
   Alert,
   Box,
   Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   MenuItem,
   Radio,
   TextField,
@@ -15,6 +19,8 @@ import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 
 import Surface from "@/src/ui/components/Surface";
 import ActionIconButton from "@/src/ui/components/ActionIconButton";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import { intakeFormCopy, intakeFormOptions } from "@/src/customizations/intakeForm";
 
 type Status =
@@ -159,19 +165,34 @@ function ChoiceCard(props: { control: React.ReactNode; label: string }) {
 }
 
 export default function EngagementIntakeForm(props: {
+  mode?: "customer" | "admin";
   token: string;
   defaultEmail: string;
   planId: string;
   existingData: Record<string, unknown> | null;
   submittedAtIso: string | null;
 }) {
-  const { token, defaultEmail, planId, existingData, submittedAtIso } = props;
+  const {
+    mode = "customer",
+    token,
+    defaultEmail,
+    planId,
+    existingData,
+    submittedAtIso,
+  } = props;
+
+  const allowResubmit = mode === "admin";
+
 
   const formRef = React.useRef<HTMLFormElement | null>(null);
   const [status, setStatus] = React.useState<Status>({ kind: "idle" });
   const [submittedAtLocalIso, setSubmittedAtLocalIso] = React.useState<string | null>(
     submittedAtIso
   );
+  const [thanksOpen, setThanksOpen] = React.useState(false);
+
+  const isLocked = !allowResubmit && Boolean(submittedAtLocalIso);
+  const actionsDisabled = status.kind === "submitting" || isLocked;
 
   const jurisdictions = getStringArray(existingData, "jurisdictions");
   const regulatoryEvents = getStringArray(existingData, "regulatory_events");
@@ -201,6 +222,9 @@ export default function EngagementIntakeForm(props: {
 
       setSubmittedAtLocalIso(new Date().toISOString());
       setStatus({ kind: "ok" });
+      if (!allowResubmit) {
+        setThanksOpen(true);
+      }
     } catch (err) {
       setStatus({
         kind: "error",
@@ -215,7 +239,9 @@ export default function EngagementIntakeForm(props: {
   }, []);
 
   const submittedMsg = submittedAtLocalIso
-    ? `Previously submitted (${new Date(submittedAtLocalIso).toLocaleString()}). You can update and resubmit.`
+    ? allowResubmit
+      ? `Previously submitted (${new Date(submittedAtLocalIso).toLocaleString()}). You can update and resubmit.`
+      : `Submitted (${new Date(submittedAtLocalIso).toLocaleString()}).`
     : null;
 
   return (
@@ -652,7 +678,7 @@ export default function EngagementIntakeForm(props: {
           <ActionIconButton
             tooltip="Reset form"
             aria-label="Reset form"
-            disabled={status.kind === "submitting"}
+            disabled={actionsDisabled}
             onClick={resetForm}
           >
             <RestartAltRoundedIcon />
@@ -661,7 +687,7 @@ export default function EngagementIntakeForm(props: {
           <ActionIconButton
             tooltip="Submit engagement intake"
             aria-label="Submit engagement intake"
-            disabled={status.kind === "submitting"}
+            disabled={actionsDisabled}
             onClick={() => formRef.current?.requestSubmit()}
           >
             <SendRoundedIcon />
@@ -677,6 +703,50 @@ export default function EngagementIntakeForm(props: {
           {intakeFormCopy.requiredNote}
         </Typography>
       </Box>
+      <Dialog
+        open={thanksOpen}
+        onClose={() => setThanksOpen(false)}
+        aria-labelledby="intake-thanks-title"
+      >
+        <DialogTitle id="intake-thanks-title">Thanks</DialogTitle>
+
+        <DialogContent>
+          <Typography sx={{ color: "text.secondary", lineHeight: 1.7 }}>
+            Thanks for submitting the intake form. Someone from TC Engine will be in touch shortly.
+            You can close this tab.
+          </Typography>
+
+          <Typography variant="caption" sx={{ color: "text.secondary", display: "block", mt: 1 }}>
+            Note: Some browsers block closing tabs opened from email links.
+          </Typography>
+        </DialogContent>
+
+        <DialogActions sx={{ px: 2, pb: 2, gap: 1 }}>
+          <ActionIconButton
+            tooltip="Close tab"
+            aria-label="Close tab"
+            onClick={() => {
+              try {
+                window.close();
+              } finally {
+                setThanksOpen(false);
+              }
+            }}
+          >
+            <CloseRoundedIcon />
+          </ActionIconButton>
+
+          <ActionIconButton
+            tooltip="Go to home"
+            aria-label="Go to home"
+            onClick={() => {
+              window.location.href = "/";
+            }}
+          >
+            <HomeRoundedIcon />
+          </ActionIconButton>
+        </DialogActions>
+      </Dialog>
     </Surface>
   );
 }
