@@ -147,5 +147,41 @@ export const themeOptions: ThemeOptions = {
         },
       },
     },
+
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          borderRadius: 14,
+          minHeight: 44,                 // key: prevents “squashed” look
+          alignItems: "center",
+        },
+        input: {
+          paddingTop: 12,
+          paddingBottom: 12,
+          paddingLeft: 14,
+          paddingRight: 14,
+        },
+        inputSizeSmall: {
+          paddingTop: 10,
+          paddingBottom: 10,
+          paddingLeft: 14,
+          paddingRight: 14,
+          fontSize: 14,
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          transform: "translate(14px, 12px) scale(1)",
+        },
+        sizeSmall: {
+          transform: "translate(14px, 11px) scale(1)",
+        },
+        shrink: {
+          transform: "translate(14px, -9px) scale(0.75)",
+        },
+      },
+    },
   },
 };
