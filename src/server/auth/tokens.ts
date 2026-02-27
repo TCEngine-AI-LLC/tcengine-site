@@ -115,3 +115,52 @@ export function verifyAdminSessionToken(token: string): { ok: true; email: strin
     return { ok: false };
   }
 }
+
+type IntakeLinkPayload = {
+  p: "intake_link";
+  purchaseId: string;
+  exp: number; // unix seconds
+  n: string;   // nonce
+};
+
+export function signIntakeLinkToken(purchaseId: string, ttlSeconds = 180 * 24 * 60 * 60): string {
+  const secret = mustEnv("AUTH_TOKEN_SECRET");
+  const header = { alg: "HS256", typ: "JWT" };
+
+  const payload: IntakeLinkPayload = {
+    p: "intake_link",
+    purchaseId,
+    exp: Math.floor(Date.now() / 1000) + ttlSeconds,
+    n: crypto.randomBytes(16).toString("hex"),
+  };
+
+  const encoded = `${b64urlJson(header)}.${b64urlJson(payload)}`;
+  const sig = hmacSign(encoded, secret);
+  return `${encoded}.${sig}`;
+}
+
+export function verifyIntakeLinkToken(
+  token: string
+): { ok: true; purchaseId: string } | { ok: false } {
+  const secret = process.env.AUTH_TOKEN_SECRET;
+  if (!secret) return { ok: false };
+
+  const parts = token.split(".");
+  if (parts.length !== 3) return { ok: false };
+
+  const [h, p, sig] = parts;
+  const expected = hmacSign(`${h}.${p}`, secret);
+  if (!timingSafeEq(sig, expected)) return { ok: false };
+
+  try {
+    const payload = JSON.parse(fromB64url(p).toString("utf8")) as IntakeLinkPayload;
+
+    if (payload.p !== "intake_link") return { ok: false };
+    if (typeof payload.exp !== "number" || payload.exp < Math.floor(Date.now() / 1000)) return { ok: false };
+    if (typeof payload.purchaseId !== "string" || !payload.purchaseId) return { ok: false };
+
+    return { ok: true, purchaseId: payload.purchaseId };
+  } catch {
+    return { ok: false };
+  }
+}

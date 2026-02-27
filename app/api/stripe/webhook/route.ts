@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
 
-import type { ConsultingPlanId } from "@/src/customizations/pricing";
+import { ConsultingPlanId } from "@/src/generated/prisma/enums";
 import { siteMeta } from "@/src/customizations/site";
 import { mustEnv } from "@/src/server/env";
 import { sendEmail } from "@/src/server/email/resend";
@@ -10,11 +10,17 @@ import {
   markPurchaseFromCheckoutSession,
   recordStripeEventOnce,
 } from "@/src/server/crm/customerLog";
+import { siteOrigin } from "@/src/server/env";
+import { signIntakeLinkToken } from "@/src/server/auth/tokens";
 
 export const runtime = "nodejs";
 
 function isPlanId(v: unknown): v is ConsultingPlanId {
-  return v === "TEN_HOURS" || v === "FORTY_HOURS";
+  return (
+    v === ConsultingPlanId.TEN_HOURS ||
+    v === ConsultingPlanId.FORTY_HOURS ||
+    v === ConsultingPlanId.ONE_DOLLAR_TEST
+  );
 }
 
 export async function POST(req: Request) {
@@ -72,8 +78,10 @@ export async function POST(req: Request) {
       }
 
       const paid = session.payment_status === "paid";
+      const origin = siteOrigin(req);
 
-      await markPurchaseFromCheckoutSession({
+      // ✅ Do this ONCE
+      const purchase = await markPurchaseFromCheckoutSession({
         stripeCheckoutSessionId: session.id,
         email,
         planId: planIdRaw,
@@ -85,8 +93,10 @@ export async function POST(req: Request) {
         currency: session.currency ?? undefined,
       });
 
-      // Optional notifications (don’t fail webhook if email fails)
       if (paid) {
+        const intakeToken = signIntakeLinkToken(purchase.id);
+        const intakeUrl = `${origin}/intake/${encodeURIComponent(intakeToken)}`;
+
         const adminTo =
           process.env.CONTACT_TO_EMAIL ??
           process.env.PURCHASE_NOTIFY_EMAIL ??
@@ -108,13 +118,14 @@ export async function POST(req: Request) {
 
           await sendEmail({
             to: email,
-            subject: "TC Engine — payment received",
+            subject: "TC Engine  payment received (next step: intake)",
             text: [
-              "Thanks — we received your payment.",
+              "Thanks  we received your payment.",
               "",
               `Plan: ${planIdRaw}`,
               "",
-              "We'll follow up shortly to schedule the engagement.",
+              "Next step: complete the engagement intake form:",
+              intakeUrl,
               "",
               "If anything looks wrong, reply to this email.",
             ].join("\n"),
@@ -125,7 +136,6 @@ export async function POST(req: Request) {
         }
       }
     }
-
     return NextResponse.json({ ok: true });
   } catch (e) {
     console.error("[api/stripe/webhook] handler error", e);

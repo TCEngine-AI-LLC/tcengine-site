@@ -72,7 +72,8 @@ model Purchase {
 
   customerId String
   customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
-
+  intake EngagementIntake?
+  
   @@index([createdAt])
   @@index([status, createdAt])
   @@index([customerId, createdAt])
@@ -91,4 +92,20 @@ model StripeWebhookEvent {
   error       String?
 
   @@index([type, createdAt])
+}
+
+model EngagementIntake {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // 1:1 with a Purchase (one intake per paid engagement)
+  purchaseId String   @unique
+  purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+
+  submittedAt DateTime?
+  data        Json?
+
+  @@index([createdAt])
+  @@index([submittedAt])
 }
